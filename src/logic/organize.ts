@@ -1,5 +1,9 @@
-import { ClassBody, MethodDefinition } from "jscodeshift"
+import { ClassBody } from "jscodeshift"
 import { ParserOptions } from "prettier"
+import {
+  moveConstructorToTop,
+  organizeGetAndSetMethods,
+} from "./organizeMethods"
 import jscodeshift = require("jscodeshift")
 
 export const organize = (code: string, options: ParserOptions) => {
@@ -11,19 +15,8 @@ export const organize = (code: string, options: ParserOptions) => {
     return root.toSource()
   }
 
-  const methods = body.find(MethodDefinition)
-
-  // place constructor function above other methods
-  if (methods.length > 0) {
-    const constructorMethod = body.find(MethodDefinition, {
-      kind: "constructor",
-    })
-
-    methods.at(0).insertBefore(constructorMethod.nodes()[0])
-    constructorMethod.remove()
-  }
-
-  // group get and set methods
+  moveConstructorToTop(body)
+  organizeGetAndSetMethods(body)
 
   console.log(root.toSource())
 

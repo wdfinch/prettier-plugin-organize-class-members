@@ -1,10 +1,22 @@
 export class Car {
+  getYear() {
+    return this.year
+  }
+
   getName() {
     return this.name
   }
 
-  getYear() {
-    return this.year
+  serialize() {
+    return this.name
+  }
+
+  deserialize() {
+    return this.name
+  }
+
+  render() {
+    return this.name
   }
 
   setName() {
