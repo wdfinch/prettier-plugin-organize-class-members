@@ -7,6 +7,25 @@ const getMethodName = (method: ASTPath<namedTypes.MethodDefinition>) =>
 const isGetSetMethod = (methodName: string): boolean =>
   !!methodName.match(/^(get|set).*/)
 
+const sortMethods = (methods: Collection<namedTypes.MethodDefinition>) => {
+  const methodPaths: ASTPath<MethodDefinition>[] = []
+  methods.forEach((m) => {
+    methodPaths.push(_.cloneDeep(m))
+  })
+
+  methods.remove()
+
+  return _.sortBy(methodPaths, (m) => getMethodName(m))
+}
+
+const getMethods = (body: Collection<ClassBody>) =>
+  body.find(MethodDefinition, {
+    kind: "method",
+    key: {
+      type: "Identifier",
+    },
+  })
+
 export const moveConstructorToTop = (body: Collection<ClassBody>) => {
   const methods = body.find(MethodDefinition)
 
@@ -30,6 +49,9 @@ interface GetSetMap {
 export const organizeGetAndSetMethods = (body: Collection<ClassBody>) => {
   const methods = body.find(MethodDefinition, {
     kind: "method",
+    key: {
+      type: "Identifier",
+    },
   })
 
   const groupedMethods: Record<string, GetSetMap> = {}
@@ -46,20 +68,20 @@ export const organizeGetAndSetMethods = (body: Collection<ClassBody>) => {
     return n
   }
 
-  const methodsToReplace: number[] = []
+  const methodIndexesToReplace: number[] = []
 
   methods.forEach((method, i) => {
     const name = getMethodName(method)
     if (name.match(/^get.*/)) {
-      methodsToReplace.push(i)
+      methodIndexesToReplace.push(i)
       groupedMethods[getGetterSetterName(name)]!.get = _.cloneDeep(method)
     } else if (name.match(/^set.*/)) {
-      methodsToReplace.push(i)
+      methodIndexesToReplace.push(i)
       groupedMethods[getGetterSetterName(name)]!.set = _.cloneDeep(method)
     }
   })
 
-  methodsToReplace.forEach((i) => {
+  methodIndexesToReplace.forEach((i) => {
     methods.at(i).remove()
   })
 
@@ -87,38 +109,54 @@ export const organizeGetAndSetMethods = (body: Collection<ClassBody>) => {
   }
 }
 
-export const organizeNonGetSetMethods = (body: Collection<ClassBody>) => {
-  let methods = body.find(MethodDefinition, {
-    kind: "method",
-  })
+export const organizeMethods = (body: Collection<ClassBody>) => {
+  let methods = getMethods(body)
 
-  const methodsToReplace: number[] = []
-  const nonGetSetMethods: ASTPath<MethodDefinition>[] = []
+  const methodIndexesToReplace: number[] = []
+  const regularMethods: ASTPath<MethodDefinition>[] = []
   let lastGetSetIndex = 0
 
   methods.forEach((method, i) => {
     const name = getMethodName(method)
     if (!isGetSetMethod(name)) {
-      methodsToReplace.push(i)
-      nonGetSetMethods.push(_.cloneDeep(method))
+      methodIndexesToReplace.push(i)
+      regularMethods.push(_.cloneDeep(method))
     } else {
       lastGetSetIndex = i
     }
   })
 
-  methodsToReplace.forEach((i) => {
+  methodIndexesToReplace.forEach((i) => {
     methods.at(i).remove()
   })
 
-  methods = body.find(MethodDefinition, {
-    kind: "method",
-  })
+  methods = getMethods(body)
 
-  const sortedGetSetMethods = _.sortBy(
-    nonGetSetMethods,
-    (m) => (m.node.key as namedTypes.Identifier).name
-  )
+  const sortedRegularMethods = _.sortBy(regularMethods, (m) => getMethodName(m))
+
   methods
     .at(lastGetSetIndex)
-    .insertAfter(sortedGetSetMethods.map((m) => m.node))
+    .insertAfter(sortedRegularMethods.map((m) => m.node))
+}
+
+export const organizeStaticMethods = (body: Collection<ClassBody>) => {
+  const constructorMethod = body.find(MethodDefinition, {
+    kind: "constructor",
+  })
+
+  const staticMethods = body.find(MethodDefinition, {
+    static: true,
+  })
+
+  const sorted = sortMethods(staticMethods)
+  constructorMethod.insertBefore(sorted.map((m) => m.node))
+}
+
+export const organizePrivateMethods = (body: Collection<ClassBody>) => {
+  const privateMethods = body.find(MethodDefinition, {
+    kind: "method",
+    key: {
+      type: "PrivateName",
+    },
+  })
 }

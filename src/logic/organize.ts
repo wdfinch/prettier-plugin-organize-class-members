@@ -3,7 +3,9 @@ import { ParserOptions } from "prettier"
 import {
   moveConstructorToTop,
   organizeGetAndSetMethods,
-  organizeNonGetSetMethods,
+  organizeMethods,
+  organizePrivateMethods,
+  organizeStaticMethods,
 } from "./organizeMethods"
 import jscodeshift = require("jscodeshift")
 
@@ -18,8 +20,9 @@ export const organize = (code: string, options: ParserOptions) => {
 
   moveConstructorToTop(body)
   organizeGetAndSetMethods(body)
-  organizeNonGetSetMethods(body)
-
+  organizeMethods(body)
+  organizeStaticMethods(body)
+  organizePrivateMethods(body)
   console.log(root.toSource())
 
   return code
