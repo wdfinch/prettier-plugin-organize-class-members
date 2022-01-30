@@ -3,12 +3,22 @@ import { resolve } from "path"
 import { format } from "prettier"
 import { plugin } from "./plugin"
 
-const code: string = readFileSync(
-  resolve(__dirname, "../examples/exampleClassJS.js"),
+const jsClass: string = readFileSync(
+  resolve(__dirname, "../examples/exampleClass.js"),
   "utf8"
 )
 
-format(code, {
+const tsClass: string = readFileSync(
+  resolve(__dirname, "../examples/exampleClass.ts"),
+  "utf8"
+)
+
+format(jsClass, {
   parser: "babel",
   plugins: [plugin],
 })
+
+// format(tsClass, {
+//   parser: "typescript",
+//   plugins: [plugin],
+// })

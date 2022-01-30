@@ -1,6 +1,13 @@
 import { namedTypes } from "ast-types/gen/namedTypes"
-import { ASTPath, ClassBody, Collection, MethodDefinition } from "jscodeshift"
+import {
+  ASTPath,
+  ClassBody,
+  ClassMethod,
+  Collection,
+  MethodDefinition,
+} from "jscodeshift"
 import _ from "lodash"
+import { ParserOptions } from "prettier"
 
 const getMethodName = (method: ASTPath<namedTypes.MethodDefinition>) =>
   (method.node.key as namedTypes.Identifier).name
@@ -43,8 +50,14 @@ const getMethods = (body: Collection<ClassBody>) =>
     },
   })
 
-export const organizeConstructorMethod = (body: Collection<ClassBody>) => {
-  const methods = body.find(MethodDefinition)
+const getMethodType = (options: ParserOptions): any =>
+  options.parser === "typescript" ? ClassMethod : MethodDefinition
+
+export const organizeConstructorMethod = (
+  body: Collection<ClassBody>,
+  options: ParserOptions
+) => {
+  const methods = body.find(getMethodType(options))
 
   if (methods.length === 0) {
     return

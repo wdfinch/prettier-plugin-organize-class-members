@@ -6,12 +6,19 @@ import {
   organizeMethods,
   organizePrivateMethods,
   organizeStaticMethods,
-} from "./organizeMethods"
-import { organizeStaticProperties } from "./organizeProperties"
+  organizeStaticProperties,
+} from "./js"
 import jscodeshift = require("jscodeshift")
 
 export const organize = (code: string, options: ParserOptions) => {
-  const root = jscodeshift(code)
+  let parser
+  if (options.parser === "typescript") {
+    parser = "tsx"
+  } else {
+    parser = "babel"
+  }
+
+  const root = jscodeshift.withParser(parser)(code)
 
   const body = root.find(ClassBody)
 
@@ -19,7 +26,7 @@ export const organize = (code: string, options: ParserOptions) => {
     return root.toSource()
   }
 
-  organizeConstructorMethod(body)
+  organizeConstructorMethod(body, options)
   organizeGetAndSetMethods(body)
   organizeMethods(body)
   organizeStaticMethods(body)
