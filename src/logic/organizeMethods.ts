@@ -4,10 +4,21 @@ import _ from "lodash"
 
 const getMethodName = (method: ASTPath<namedTypes.MethodDefinition>) =>
   (method.node.key as namedTypes.Identifier).name
+
+const getPrivateMethodName = (method: ASTPath<namedTypes.MethodDefinition>) =>
+  (method.node.key as namedTypes.PrivateName).id.name
+
 const isGetSetMethod = (methodName: string): boolean =>
   !!methodName.match(/^(get|set).*/)
 
-const sortMethods = (methods: Collection<namedTypes.MethodDefinition>) => {
+interface SortMethodsOptions {
+  isPrivate: boolean
+}
+
+const sortMethods = (
+  methods: Collection<namedTypes.MethodDefinition>,
+  options?: Partial<SortMethodsOptions>
+) => {
   const methodPaths: ASTPath<MethodDefinition>[] = []
   methods.forEach((m) => {
     methodPaths.push(_.cloneDeep(m))
@@ -15,7 +26,13 @@ const sortMethods = (methods: Collection<namedTypes.MethodDefinition>) => {
 
   methods.remove()
 
-  return _.sortBy(methodPaths, (m) => getMethodName(m))
+  return _.sortBy(methodPaths, (m) => {
+    if (options?.isPrivate) {
+      return getPrivateMethodName(m)
+    } else {
+      getMethodName(m)
+    }
+  })
 }
 
 const getMethods = (body: Collection<ClassBody>) =>
@@ -26,7 +43,7 @@ const getMethods = (body: Collection<ClassBody>) =>
     },
   })
 
-export const moveConstructorToTop = (body: Collection<ClassBody>) => {
+export const organizeConstructorMethod = (body: Collection<ClassBody>) => {
   const methods = body.find(MethodDefinition)
 
   if (methods.length === 0) {
@@ -159,4 +176,8 @@ export const organizePrivateMethods = (body: Collection<ClassBody>) => {
       type: "PrivateName",
     },
   })
+
+  const sorted = sortMethods(privateMethods, { isPrivate: true })
+  const methods = getMethods(body)
+  methods.at(methods.length - 1).insertAfter(sorted.map((m) => m.node))
 }

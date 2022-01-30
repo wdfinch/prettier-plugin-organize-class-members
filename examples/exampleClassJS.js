@@ -3,11 +3,17 @@ export class Car {
     return this.name
   }
 
+  static staticProperty = 'someValue'
+
   deserialize() {
     return this.name
   }
 
-  #serialize() {
+  #serialize2() {
+    return this.name
+  }
+
+  #serialize1() {
     return this.name
   }
 

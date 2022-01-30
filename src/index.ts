@@ -4,7 +4,7 @@ import { format } from "prettier"
 import { plugin } from "./plugin"
 
 const code: string = readFileSync(
-  resolve(__dirname, "../examples/exampleClassOne.js"),
+  resolve(__dirname, "../examples/exampleClassJS.js"),
   "utf8"
 )
 
