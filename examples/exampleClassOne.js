@@ -1,13 +1,5 @@
 export class Car {
-  getYear() {
-    return this.year
-  }
-
   getName() {
-    return this.name
-  }
-
-  serialize() {
     return this.name
   }
 
