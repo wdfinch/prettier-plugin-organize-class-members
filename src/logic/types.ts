@@ -1,5 +1,4 @@
 import { namedTypes } from "ast-types/gen/namedTypes"
-import { ParserOptions } from "prettier"
 
 export type Sections =
   | "staticProperties"
@@ -7,18 +6,33 @@ export type Sections =
   | "properties"
   | "constructor"
   | "methods"
-export type SortOrder = Sections[]
+
+export type Order = Sections[]
+
+type Accessibility = "public" | "protected" | "private"
+export type AccessibilityOrder = Accessibility[]
+export type Groups = "getterThenSetter" | "everythingElse"
+export type GroupOrder = Groups[]
+export type SupportedParsers = "tsx" | "babel"
+
 export interface PluginOptions {
-  sortOrder: SortOrder
-  parserOptions: ParserOptions
+  order: Order
+  sortOrder: "alphabetical" | "none"
+  accessibilityOrder: AccessibilityOrder
+  groupOrder: GroupOrder
 }
 
-export type InternalSortSection =
-  | "constructor"
-  | "getSetMethods"
-  | "publicMethods"
+export type InternalSortSection = "constructor" | "methods"
 
 export type SectionsToSort = Record<
   InternalSortSection,
   namedTypes.ClassBody["body"] | null
 >
+
+export interface MemberAccessibilityGroup {
+  public: namedTypes.ClassBody["body"] | null
+  private: namedTypes.ClassBody["body"] | null
+  protected: namedTypes.ClassBody["body"] | null
+}
+
+export type Filter = "public" | "private" | "protected"

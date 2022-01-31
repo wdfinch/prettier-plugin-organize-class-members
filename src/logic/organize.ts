@@ -1,18 +1,18 @@
 import { namedTypes } from "ast-types/gen/namedTypes"
 import { ClassBody } from "jscodeshift"
 import { ParserOptions } from "prettier"
-import { defaultSortOrder } from "./constants"
 import {
-  getConstructorMethod,
-  getPublicMethods,
-  getSortedGetAndSetPublicMethods,
-} from "./js"
-import { SectionsToSort } from "./types"
+  defaultAccessibilityOrder,
+  defaultGroupOrder,
+  defaultOrder,
+} from "./constants"
+import { getConstructorMethod, getMethods } from "./js"
+import { PluginOptions, SectionsToSort, SupportedParsers } from "./types"
 import { hasDuplicates } from "./utils"
 import jscodeshift = require("jscodeshift")
 
 export const organize = (code: string, options: ParserOptions) => {
-  let parser
+  let parser: SupportedParsers
   if (options.parser === "typescript") {
     parser = "tsx"
   } else {
@@ -26,29 +26,35 @@ export const organize = (code: string, options: ParserOptions) => {
     return root.toSource()
   }
 
-  const sectionsToSort: SectionsToSort = {
-    constructor: getConstructorMethod(body, options),
-    getSetMethods: getSortedGetAndSetPublicMethods(body, options),
-    publicMethods: getPublicMethods(body, options),
+  const pluginOptions: PluginOptions = {
+    order: defaultOrder,
+    sortOrder: "alphabetical",
+    accessibilityOrder: defaultAccessibilityOrder,
+    groupOrder: defaultGroupOrder,
   }
 
-  if (hasDuplicates(defaultSortOrder)) {
+  const sectionsToSort: SectionsToSort = {
+    constructor: getConstructorMethod(body, parser),
+    methods: getMethods(body, parser, pluginOptions),
+  }
+
+  if (hasDuplicates(defaultOrder)) {
     throw new Error("Duplicate sort order options is not permitted")
   }
 
   let sorted: (namedTypes.ClassBody["body"] | null)[] = []
-  defaultSortOrder.forEach((item) => {
+  defaultOrder.forEach((item) => {
     if (item === "constructor") {
       sorted.push(sectionsToSort.constructor)
     } else if (item === "methods") {
-      sorted.push(sectionsToSort.getSetMethods)
-      sorted.push(sectionsToSort.publicMethods)
+      sorted.push(sectionsToSort.methods)
     }
   })
 
   const sortedWithoutNull = sorted.filter(
     (s) => !!s
   ) as namedTypes.ClassBody["body"][]
+
   body.replaceWith((path) => {
     path.node.body = sortedWithoutNull.flat()
     return path.node

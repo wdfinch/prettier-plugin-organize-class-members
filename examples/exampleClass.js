@@ -12,11 +12,19 @@ export class Car {
     this.year = year
   }
 
-  method1() {
+  #method3() {
 
   }
 
-  method2() {
+  _method2() {
+
+  }
+
+  method4() {
+
+  }
+
+  method6() {
 
   }
 }
