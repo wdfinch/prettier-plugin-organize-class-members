@@ -7,19 +7,12 @@ import {
   defaultOrder,
 } from "./constants"
 import { getConstructorMethod, getMethods } from "./js"
-import { PluginOptions, SectionsToSort, SupportedParsers } from "./types"
+import { PluginOptions, SectionsToSort } from "./types"
 import { hasDuplicates } from "./utils"
 import jscodeshift = require("jscodeshift")
 
 export const organize = (code: string, options: ParserOptions) => {
-  let parser: SupportedParsers
-  if (options.parser === "typescript") {
-    parser = "tsx"
-  } else {
-    parser = "babel"
-  }
-
-  const root = jscodeshift.withParser(parser)(code)
+  const root = jscodeshift.withParser("tsx")(code)
   const body = root.find(ClassBody)
 
   if (body.length === 0) {
@@ -34,8 +27,8 @@ export const organize = (code: string, options: ParserOptions) => {
   }
 
   const sectionsToSort: SectionsToSort = {
-    constructor: getConstructorMethod(body, parser),
-    methods: getMethods(body, parser, pluginOptions),
+    constructor: getConstructorMethod(body),
+    methods: getMethods(body, pluginOptions),
   }
 
   if (hasDuplicates(defaultOrder)) {

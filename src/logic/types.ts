@@ -13,7 +13,6 @@ type Accessibility = "public" | "protected" | "private"
 export type AccessibilityOrder = Accessibility[]
 export type Groups = "getterThenSetter" | "everythingElse"
 export type GroupOrder = Groups[]
-export type SupportedParsers = "tsx" | "babel"
 
 export interface PluginOptions {
   order: Order

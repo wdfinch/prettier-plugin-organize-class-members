@@ -1,28 +1,26 @@
 import { namedTypes } from "ast-types/gen/namedTypes"
-import { ASTPath, ClassBody, ClassMethod, Collection } from "jscodeshift"
-import _ from "lodash"
 import {
-  Filter,
-  MemberAccessibilityGroup,
-  PluginOptions,
-  SupportedParsers,
-} from "../types"
-import { getName } from "../utils"
-import { getMethodType } from "./utilts"
+  ASTPath,
+  ClassBody,
+  ClassMethod,
+  ClassPrivateMethod,
+  Collection,
+} from "jscodeshift"
+import _ from "lodash"
+import { Filter, MemberAccessibilityGroup, PluginOptions } from "../types"
 
-const getPrivateMethodName = (method: ASTPath<namedTypes.MethodDefinition>) =>
-  (method.node.key as namedTypes.PrivateName).id.name
+const getNodeName = (node: namedTypes.ClassBody["body"][number]) =>
+  ((node as ClassMethod).key as namedTypes.Identifier).name
 
 const isGetSetMethod = (methodName: string): boolean =>
   !!methodName.match(/^(get|set).*/)
 
 const findMethods = (
   body: Collection<ClassBody>,
-  options: SupportedParsers,
   filter: Filter
-): ASTPath<namedTypes.ClassMethod>[] => {
+): namedTypes.ClassBody["body"] => {
   let methods = body
-    .find(getMethodType(options), {
+    .find(ClassMethod, {
       kind: "method",
       key: {
         type: "Identifier",
@@ -32,8 +30,8 @@ const findMethods = (
 
   methods = methods.filter((method) => {
     const a = method.node.accessibility
-    const isConventionalPrivateMethod = getName(method)[0] === "_"
-    const isPublic = filter === "public" && a === undefined
+    const isConventionalPrivateMethod = getNodeName(method.node)[0] === "_"
+    const isPublic = filter === "public" || a === undefined
 
     if (filter !== "private" && isConventionalPrivateMethod) {
       return false
@@ -50,27 +48,24 @@ const findMethods = (
     return a === filter
   })
 
+  const methodNodes = methods.map((n) => n.node)
+
   if (filter === "private") {
     const privateMethods = body
-      .find(getMethodType(options), {
-        kind: "method",
-        key: {
-          type: "PrivateName",
-        },
-      })
+      .find(ClassPrivateMethod)
       .paths()
+      .map((n) => n.node)
 
-    return [...methods, ...privateMethods]
+    return [...methodNodes, ...privateMethods]
   }
 
-  return methods
+  return methodNodes
 }
 
 export const getConstructorMethod = (
-  body: Collection<ClassBody>,
-  parser: SupportedParsers
+  body: Collection<ClassBody>
 ): namedTypes.ClassBody["body"] | null => {
-  const constructorMethod = body.find(getMethodType(parser), {
+  const constructorMethod = body.find(ClassMethod, {
     kind: "constructor",
   })
 
@@ -83,33 +78,31 @@ export const getConstructorMethod = (
 
 const getMethodByAccessibility = (
   body: Collection<ClassBody>,
-  parser: SupportedParsers,
   filter: Filter,
   options: PluginOptions
 ): namedTypes.ClassBody["body"] | null => {
-  let paths = findMethods(body, parser, filter)
+  let nodes = findMethods(body, filter)
 
-  if (paths.length === 0) {
+  if (nodes.length === 0) {
     return null
   }
 
-  if (options.groupOrder.includes("getterThenSetter")) {
-    paths = paths.filter((method) => {
-      const name = getName(method)
-      return !isGetSetMethod(name)
-    })
-  }
+  // if (options.groupOrder.includes("getterThenSetter")) {
+  //   paths = paths.filter((method) => {
+  //     const name = getName(method)
+  //     return !isGetSetMethod(name)
+  //   })
+  // }
 
   if (options.sortOrder === "alphabetical") {
-    paths = _.sortBy(paths, (m) => getName(m))
+    nodes = _.sortBy(nodes, (n) => getNodeName(n))
   }
 
-  return paths.map((m) => m.node)
+  return nodes
 }
 
 export const getMethods = (
   body: Collection<ClassBody>,
-  parser: SupportedParsers,
   options: PluginOptions
 ): namedTypes.ClassBody["body"] => {
   const group: MemberAccessibilityGroup = {
@@ -118,9 +111,9 @@ export const getMethods = (
     public: null,
   }
 
-  group.public = getMethodByAccessibility(body, parser, "public", options)
-  group.protected = getMethodByAccessibility(body, parser, "protected", options)
-  group.private = getMethodByAccessibility(body, parser, "private", options)
+  group.public = getMethodByAccessibility(body, "public", options)
+  group.protected = getMethodByAccessibility(body, "protected", options)
+  group.private = getMethodByAccessibility(body, "private", options)
 
   let sortedByAccessibility: namedTypes.ClassBody["body"] = []
   options.accessibilityOrder.forEach((a) => {
