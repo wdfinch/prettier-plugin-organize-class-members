@@ -1,12 +1,10 @@
 import { ClassMethod, MethodDefinition } from "jscodeshift"
 import { ParserOptions } from "prettier"
 
-export const getMethodType = (
-  options: ParserOptions
-): typeof MethodDefinition => {
+export const getMethodType = (options: ParserOptions): typeof ClassMethod => {
   if (options.parser === "typescript") {
-    return ClassMethod as unknown as typeof MethodDefinition
+    return ClassMethod
   } else {
-    return MethodDefinition
+    return MethodDefinition as unknown as typeof ClassMethod
   }
 }

@@ -1,3 +1,3 @@
-export * from "./organizeMethods"
+export * from "./getPublicMethods"
 export * from "./organizeProperties"
 export { getMethodType } from "./utilts"

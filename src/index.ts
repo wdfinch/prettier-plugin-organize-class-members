@@ -13,12 +13,12 @@ const tsClass: string = readFileSync(
   "utf8"
 )
 
-// format(jsClass, {
-//   parser: "babel",
-//   plugins: [plugin],
-// })
-
-format(tsClass, {
-  parser: "typescript",
+format(jsClass, {
+  parser: "babel",
   plugins: [plugin],
 })
+
+// format(tsClass, {
+//   parser: "typescript",
+//   plugins: [plugin],
+// })

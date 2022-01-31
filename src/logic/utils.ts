@@ -11,3 +11,6 @@ export const getName = <
 >(
   method: ASTPath<ASTType>
 ) => (method.node.key as namedTypes.Identifier).name
+
+export const hasDuplicates = (array: any[]) =>
+  new Set(array).size != array.length
