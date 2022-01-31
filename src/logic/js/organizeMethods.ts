@@ -1,16 +1,9 @@
 import { namedTypes } from "ast-types/gen/namedTypes"
-import {
-  ASTPath,
-  ClassBody,
-  ClassMethod,
-  Collection,
-  MethodDefinition,
-} from "jscodeshift"
+import { ASTPath, ClassBody, Collection, MethodDefinition } from "jscodeshift"
 import _ from "lodash"
 import { ParserOptions } from "prettier"
-
-const getMethodName = (method: ASTPath<namedTypes.MethodDefinition>) =>
-  (method.node.key as namedTypes.Identifier).name
+import { getName } from "../utils"
+import { getMethodType } from "./utilts"
 
 const getPrivateMethodName = (method: ASTPath<namedTypes.MethodDefinition>) =>
   (method.node.key as namedTypes.PrivateName).id.name
@@ -37,21 +30,18 @@ const sortMethods = (
     if (options?.isPrivate) {
       return getPrivateMethodName(m)
     } else {
-      getMethodName(m)
+      getName<MethodDefinition>(m)
     }
   })
 }
 
-const getMethods = (body: Collection<ClassBody>) =>
-  body.find(MethodDefinition, {
+const getMethods = (body: Collection<ClassBody>, options: ParserOptions) =>
+  body.find(getMethodType(options), {
     kind: "method",
     key: {
       type: "Identifier",
     },
   })
-
-const getMethodType = (options: ParserOptions): any =>
-  options.parser === "typescript" ? ClassMethod : MethodDefinition
 
 export const organizeConstructorMethod = (
   body: Collection<ClassBody>,
@@ -63,7 +53,7 @@ export const organizeConstructorMethod = (
     return
   }
 
-  const constructorMethod = body.find(MethodDefinition, {
+  const constructorMethod = body.find(getMethodType(options), {
     kind: "constructor",
   })
 
@@ -76,8 +66,11 @@ interface GetSetMap {
   set: ASTPath<MethodDefinition> | null
 }
 
-export const organizeGetAndSetMethods = (body: Collection<ClassBody>) => {
-  const methods = body.find(MethodDefinition, {
+export const organizeGetAndSetMethods = (
+  body: Collection<ClassBody>,
+  options: ParserOptions
+) => {
+  const methods = body.find(getMethodType(options), {
     kind: "method",
     key: {
       type: "Identifier",
@@ -101,7 +94,7 @@ export const organizeGetAndSetMethods = (body: Collection<ClassBody>) => {
   const methodIndexesToReplace: number[] = []
 
   methods.forEach((method, i) => {
-    const name = getMethodName(method)
+    const name = getName(method)
     if (name.match(/^get.*/)) {
       methodIndexesToReplace.push(i)
       groupedMethods[getGetterSetterName(name)]!.get = _.cloneDeep(method)
@@ -128,7 +121,7 @@ export const organizeGetAndSetMethods = (body: Collection<ClassBody>) => {
     }
   })
 
-  const constructorMethod = body.find(MethodDefinition, {
+  const constructorMethod = body.find(getMethodType(options), {
     kind: "constructor",
   })
 
@@ -139,15 +132,18 @@ export const organizeGetAndSetMethods = (body: Collection<ClassBody>) => {
   }
 }
 
-export const organizeMethods = (body: Collection<ClassBody>) => {
-  let methods = getMethods(body)
+export const organizeMethods = (
+  body: Collection<ClassBody>,
+  options: ParserOptions
+) => {
+  let methods = getMethods(body, options)
 
   const methodIndexesToReplace: number[] = []
   const regularMethods: ASTPath<MethodDefinition>[] = []
   let lastGetSetIndex = 0
 
   methods.forEach((method, i) => {
-    const name = getMethodName(method)
+    const name = getName(method)
     if (!isGetSetMethod(name)) {
       methodIndexesToReplace.push(i)
       regularMethods.push(_.cloneDeep(method))
@@ -160,21 +156,24 @@ export const organizeMethods = (body: Collection<ClassBody>) => {
     methods.at(i).remove()
   })
 
-  methods = getMethods(body)
+  methods = getMethods(body, options)
 
-  const sortedRegularMethods = _.sortBy(regularMethods, (m) => getMethodName(m))
+  const sortedRegularMethods = _.sortBy(regularMethods, (m) => getName(m))
 
   methods
     .at(lastGetSetIndex)
     .insertAfter(sortedRegularMethods.map((m) => m.node))
 }
 
-export const organizeStaticMethods = (body: Collection<ClassBody>) => {
-  const constructorMethod = body.find(MethodDefinition, {
+export const organizeStaticMethods = (
+  body: Collection<ClassBody>,
+  options: ParserOptions
+) => {
+  const constructorMethod = body.find(getMethodType(options), {
     kind: "constructor",
   })
 
-  const staticMethods = body.find(MethodDefinition, {
+  const staticMethods = body.find(getMethodType(options), {
     static: true,
   })
 
@@ -182,8 +181,11 @@ export const organizeStaticMethods = (body: Collection<ClassBody>) => {
   constructorMethod.insertBefore(sorted.map((m) => m.node))
 }
 
-export const organizePrivateMethods = (body: Collection<ClassBody>) => {
-  const privateMethods = body.find(MethodDefinition, {
+export const organizePrivateMethods = (
+  body: Collection<ClassBody>,
+  options: ParserOptions
+) => {
+  const privateMethods = body.find(getMethodType(options), {
     kind: "method",
     key: {
       type: "PrivateName",
@@ -191,6 +193,6 @@ export const organizePrivateMethods = (body: Collection<ClassBody>) => {
   })
 
   const sorted = sortMethods(privateMethods, { isPrivate: true })
-  const methods = getMethods(body)
+  const methods = getMethods(body, options)
   methods.at(methods.length - 1).insertAfter(sorted.map((m) => m.node))
 }

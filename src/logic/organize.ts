@@ -8,6 +8,8 @@ import {
   organizeStaticMethods,
   organizeStaticProperties,
 } from "./js"
+import { organizePrivateProtectedClassMethods } from "./ts"
+import { organizeClassProperties } from "./ts/organizeProperties"
 import jscodeshift = require("jscodeshift")
 
 export const organize = (code: string, options: ParserOptions) => {
@@ -27,11 +29,16 @@ export const organize = (code: string, options: ParserOptions) => {
   }
 
   organizeConstructorMethod(body, options)
-  organizeGetAndSetMethods(body)
-  organizeMethods(body)
-  organizeStaticMethods(body)
-  organizePrivateMethods(body)
-  organizeStaticProperties(body)
+  organizeGetAndSetMethods(body, options)
+  organizeMethods(body, options)
+  organizeStaticMethods(body, options)
+  organizePrivateMethods(body, options)
+  organizeStaticProperties(body, options)
+
+  if (options.parser === "typescript") {
+    organizeClassProperties(body)
+    organizePrivateProtectedClassMethods(body)
+  }
 
   console.log(root.toSource())
 

@@ -1,7 +1,13 @@
 import { namedTypes } from "ast-types/gen/namedTypes"
-import { ASTPath, ClassBody, ClassProperty, Collection } from "jscodeshift"
+import {
+  ASTPath,
+  ClassBody,
+  ClassMethod,
+  ClassProperty,
+  Collection,
+} from "jscodeshift"
 import _ from "lodash"
-import { getPropertyName } from "../utils"
+import { getName } from "../utils"
 
 interface PropertiesByGroup {
   private: ASTPath<namedTypes.ClassProperty>[]
@@ -23,17 +29,19 @@ export const organizeClassProperties = (body: Collection<ClassBody>) => {
   properties.forEach((property) => {
     const { accessibility } = property.node
     if (accessibility === "private") {
-      propertiesByGroup.private.push(property)
+      propertiesByGroup.private.push(_.cloneDeep(property))
     } else if (accessibility === "protected") {
-      propertiesByGroup.protected.push(property)
+      propertiesByGroup.protected.push(_.cloneDeep(property))
     } else {
-      propertiesByGroup.public.push(property)
+      propertiesByGroup.public.push(_.cloneDeep(property))
     }
   })
 
+  properties.remove()
+
   _.forOwn(propertiesByGroup, (value, key) => {
     propertiesByGroup[key as keyof PropertiesByGroup] = _.sortBy(value, (p) =>
-      getPropertyName(p)
+      getName(p)
     )
   })
 
@@ -43,12 +51,9 @@ export const organizeClassProperties = (body: Collection<ClassBody>) => {
     ...propertiesByGroup.public,
   ]
 
-  const staticMethods = body.find(ClassProperty, {
-    static: true,
+  const constructorMethod = body.find(ClassMethod, {
+    kind: "constructor",
   })
 
-  if (staticMethods.length > 0) {
-    staticMethods.at(0).insertAfter(sortedProperties.map((s) => s.node))
-    return
-  }
+  constructorMethod.at(0).insertBefore(sortedProperties.map((s) => s.node))
 }

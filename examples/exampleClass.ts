@@ -9,16 +9,16 @@ export class Car {
     return this.name
   }
 
-  #serialize2() {
-    return this.name
-  }
-
   public1: string
   private name: string
   private year: string
   public2: string
   protected protected2: string
   protected protected1: string
+
+  #serialize2() {
+    return this.name
+  }
 
   #serialize1() {
     return this.name
@@ -47,5 +47,21 @@ export class Car {
     this.protected2 = ""
     this.public1 = ""
     this.public2 = ""
+  }
+
+  private privateMethod2() {
+    return this.name
+  }
+
+  protected protectedMethod2() {
+    return this.name
+  }
+
+  private privateMethod1() {
+    return this.name
+  }
+
+  protected protectedMethod1() {
+    return this.name
   }
 }

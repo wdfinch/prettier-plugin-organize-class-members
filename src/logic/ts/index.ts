@@ -1,1 +1,2 @@
-export * from "./organize"
+export * from "./organizeMethods"
+export * from "./organizeProperties"
