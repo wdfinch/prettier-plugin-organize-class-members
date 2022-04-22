@@ -117,7 +117,7 @@ const getGetterAndSetters = (
     }
   })
 
-  let output: namedTypes.ClassBody["body"] = []
+  const output: namedTypes.ClassBody["body"] = []
   getterAndSetters.forEach((gs) => {
     if (gs.getter) {
       output.push(gs.getter)

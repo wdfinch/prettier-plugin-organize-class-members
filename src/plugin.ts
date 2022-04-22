@@ -1,8 +1,8 @@
 import type { Parser, ParserOptions, Plugin } from "prettier"
 import { SKIP_ORGANIZE_COMMENTS } from "./constants"
 import { organize } from "./logic"
-const { parsers: babelParsers } = require("prettier/parser-babel")
-const { parsers: typescriptParsers } = require("prettier/parser-typescript")
+import babelParsers = require("prettier/parser-babel")
+import typescriptParsers = require("prettier/parser-typescript")
 
 const organizeClasses = (code: string, options: ParserOptions) => {
   for (const skip of SKIP_ORGANIZE_COMMENTS) {
@@ -10,7 +10,7 @@ const organizeClasses = (code: string, options: ParserOptions) => {
       return code
     }
   }
-  return organize(code, options)
+
   try {
     return organize(code, options)
   } catch (e) {
@@ -20,8 +20,6 @@ const organizeClasses = (code: string, options: ParserOptions) => {
 
     return code
   }
-
-  return code
 }
 
 const withPreprocess = (parser: Parser): Parser => ({
@@ -35,8 +33,8 @@ const withPreprocess = (parser: Parser): Parser => ({
 
 export const plugin: Plugin = {
   parsers: {
-    babel: withPreprocess(babelParsers.babel),
-    typescript: withPreprocess(typescriptParsers.typescript),
+    babel: withPreprocess(babelParsers.parsers.babel),
+    typescript: withPreprocess(typescriptParsers.parsers.typescript),
   },
 }
 

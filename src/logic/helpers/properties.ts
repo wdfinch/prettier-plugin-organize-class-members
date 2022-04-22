@@ -16,13 +16,13 @@ const findProperties = (
   accessibility: Accessibility,
   options: Options
 ): namedTypes.ClassBody["body"] => {
-  let field = body
+  const field = body
     .find(ClassProperty, {
       static: options.getStaticMethods,
     })
     .paths()
 
-  let methodNodes = field.map((n) => n.node)
+  const methodNodes = field.map((n) => n.node)
   return methodNodes.filter((n) => {
     if (accessibility === "public" && n.accessibility === undefined) {
       return n

@@ -10,7 +10,7 @@ import {
 import { getConstructorMethod, getMethods } from "./helpers"
 import { getProperties } from "./helpers/properties"
 import { PluginOptions, SectionsToSort } from "./types"
-import { hasDuplicates } from "./utils"
+import { areOptionsValid } from "./validateOptionsHelpers"
 import jscodeshift = require("jscodeshift")
 
 export const organize = (code: string, options: ParserOptions) => {
@@ -28,6 +28,9 @@ export const organize = (code: string, options: ParserOptions) => {
     groupOrder: defaultGroupOrder,
   }
 
+  // throw error if options are invalid
+  areOptionsValid(pluginOptions)
+
   const sectionsToSort: SectionsToSort = {
     constructor: getConstructorMethod(body),
     methods: getMethods(body, { pluginOptions, getStaticMethods: false }),
@@ -42,11 +45,7 @@ export const organize = (code: string, options: ParserOptions) => {
     }),
   }
 
-  if (hasDuplicates(defaultOrder)) {
-    throw new Error("Duplicate sort order options is not permitted")
-  }
-
-  let sorted: (namedTypes.ClassBody["body"] | null)[] = []
+  const sorted: (namedTypes.ClassBody["body"] | null)[] = []
   defaultOrder.forEach((item) => {
     if (item === "constructor") {
       sorted.push(sectionsToSort.constructor)
