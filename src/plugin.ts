@@ -10,6 +10,7 @@ const organizeClasses = (code: string, options: ParserOptions) => {
       return code
     }
   }
+  return organize(code, options)
   try {
     return organize(code, options)
   } catch (e) {

@@ -14,4 +14,7 @@ export const defaultAccessibilityOrder: AccessibilityOrder = [
   "private",
 ]
 
-export const defaultGroupOrder: GroupOrder = ["everythingElse"]
+export const defaultGroupOrder: GroupOrder = [
+  "getterThenSetter",
+  "everythingElse",
+]

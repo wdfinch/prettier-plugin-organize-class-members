@@ -1,22 +1,27 @@
 import { namedTypes } from "ast-types/gen/namedTypes"
-import {
-  ASTPath,
-  ClassBody,
-  ClassMethod,
-  ClassPrivateMethod,
-  Collection,
-} from "jscodeshift"
+import { ClassMethod, ClassPrivateMethod, Collection } from "jscodeshift"
 import _ from "lodash"
 import { Filter, MemberAccessibilityGroup, PluginOptions } from "../types"
+
+export const getConstructorMethod = (
+  body: Collection<namedTypes.ClassBody>
+): namedTypes.ClassBody["body"] | null => {
+  const constructorMethod = body.find(ClassMethod, {
+    kind: "constructor",
+  })
+
+  if (constructorMethod.length === 0) {
+    return null
+  }
+
+  return constructorMethod.paths().map((n) => n.node)
+}
 
 const getNodeName = (node: namedTypes.ClassBody["body"][number]) =>
   ((node as ClassMethod).key as namedTypes.Identifier).name
 
-const isGetSetMethod = (methodName: string): boolean =>
-  !!methodName.match(/^(get|set).*/)
-
 const findMethods = (
-  body: Collection<ClassBody>,
+  body: Collection<namedTypes.ClassBody>,
   filter: Filter
 ): namedTypes.ClassBody["body"] => {
   let methods = body
@@ -62,22 +67,66 @@ const findMethods = (
   return methodNodes
 }
 
-export const getConstructorMethod = (
-  body: Collection<ClassBody>
-): namedTypes.ClassBody["body"] | null => {
-  const constructorMethod = body.find(ClassMethod, {
-    kind: "constructor",
+type ClassBody = namedTypes.ClassBody["body"] extends (infer U)[] ? U : never
+
+interface GetterAndSetter {
+  getter: ClassBody | null
+  setter: ClassBody | null
+}
+
+const getGetterAndSetters = (
+  nodes: namedTypes.ClassBody["body"]
+): namedTypes.ClassBody["body"] => {
+  const getterAndSetters = new Map<string, GetterAndSetter>()
+
+  nodes.forEach((node) => {
+    const name = getNodeName(node)
+
+    if (!name) {
+      return nodes
+    }
+
+    if (name.startsWith("get") || name.startsWith("set")) {
+      const nameWithoutGetSet = name.substring(3)
+
+      if (!getterAndSetters.get(nameWithoutGetSet)) {
+        getterAndSetters.set(nameWithoutGetSet, {
+          setter: null,
+          getter: null,
+        })
+      }
+
+      if (name.startsWith("get")) {
+        getterAndSetters.set(nameWithoutGetSet, {
+          ...getterAndSetters.get(nameWithoutGetSet)!,
+          getter: node,
+        })
+      }
+
+      if (name.startsWith("set")) {
+        getterAndSetters.set(nameWithoutGetSet, {
+          ...getterAndSetters.get(nameWithoutGetSet)!,
+          setter: node,
+        })
+      }
+    }
   })
 
-  if (constructorMethod.length === 0) {
-    return null
-  }
+  let output: namedTypes.ClassBody["body"] = []
+  getterAndSetters.forEach((gs) => {
+    if (gs.getter) {
+      output.push(gs.getter)
+    }
+    if (gs.setter) {
+      output.push(gs.setter)
+    }
+  })
 
-  return constructorMethod.paths().map((n) => n.node)
+  return output
 }
 
 const getMethodByAccessibility = (
-  body: Collection<ClassBody>,
+  body: Collection<namedTypes.ClassBody>,
   filter: Filter,
   options: PluginOptions
 ): namedTypes.ClassBody["body"] | null => {
@@ -87,22 +136,21 @@ const getMethodByAccessibility = (
     return null
   }
 
-  // if (options.groupOrder.includes("getterThenSetter")) {
-  //   paths = paths.filter((method) => {
-  //     const name = getName(method)
-  //     return !isGetSetMethod(name)
-  //   })
-  // }
-
   if (options.sortOrder === "alphabetical") {
     nodes = _.sortBy(nodes, (n) => getNodeName(n))
   }
 
-  return nodes
+  options.groupOrder.forEach((o) => {
+    if (o === "getterThenSetter") {
+      nodes = [...getGetterAndSetters(nodes), ...nodes]
+    }
+  })
+
+  return _.uniqBy(nodes, (g) => getNodeName(g))
 }
 
 export const getMethods = (
-  body: Collection<ClassBody>,
+  body: Collection<namedTypes.ClassBody>,
   options: PluginOptions
 ): namedTypes.ClassBody["body"] => {
   const group: MemberAccessibilityGroup = {
@@ -128,90 +176,3 @@ export const getMethods = (
 
   return sortedByAccessibility
 }
-
-interface GetSetMap {
-  get: ASTPath<ClassMethod> | null
-  set: ASTPath<ClassMethod> | null
-}
-
-// const getGetSetMethods = (
-//   body: Collection<ClassBody>,
-//   parser: SupportedParsers,
-//   options: ParserOptions
-// ): namedTypes.ClassBody["body"] | null => {
-//   let methods = findMethods(body, parser, "public")
-//   const groupedMethods: Record<string, GetSetMap> = {}
-//
-//   const getGetterSetterName = (name: string) => {
-//     const n = name.substring(3)
-//     if (!groupedMethods[n]) {
-//       groupedMethods[n] = {
-//         get: null,
-//         set: null,
-//       }
-//     }
-//
-//     return n
-//   }
-//
-//   methods.forEach((method) => {
-//     const name = getName(method)
-//     if (name.match(/^get.*/)) {
-//       groupedMethods[getGetterSetterName(name)]!.get = _.cloneDeep(method)
-//     } else if (name.match(/^set.*/)) {
-//       groupedMethods[getGetterSetterName(name)]!.set = _.cloneDeep(method)
-//     }
-//   })
-//
-//   const sortedMethods = _(groupedMethods).toPairs().sortBy(0).value()
-//
-//   const methodsToInsert: ASTPath<ClassMethod>[] = []
-//   sortedMethods.forEach((method) => {
-//     const m = method[1]
-//     if (m.get) {
-//       methodsToInsert.push(method[1].get!)
-//     }
-//     if (m.set) {
-//       methodsToInsert.push(method[1].set!)
-//     }
-//   })
-//
-//   if (methods.length === 0) {
-//     return null
-//   }
-//
-//   return methodsToInsert.map((m) => m.node)
-// }
-
-//
-// export const organizeStaticMethods = (
-//   body: Collection<ClassBody>,
-//   options: ParserOptions
-// ) => {
-//   const constructorMethod = body.find(getMethodType(options), {
-//     kind: "constructor",
-//   })
-//
-//   const staticMethods = body.find(getMethodType(options), {
-//     static: true,
-//   })
-//
-//   const sorted = sortMethods(staticMethods)
-//   constructorMethod.insertBefore(sorted.map((m) => m.node))
-// }
-//
-// export const organizePrivateMethods = (
-//   body: Collection<ClassBody>,
-//   options: ParserOptions
-// ) => {
-//   const privateMethods = body.find(getMethodType(options), {
-//     kind: "method",
-//     key: {
-//       type: "PrivateName",
-//     },
-//   })
-//
-//   const sorted = sortMethods(privateMethods, { isPrivate: true })
-//   const methods = getMethods(body, options)
-//   methods.at(methods.length - 1).insertAfter(sorted.map((m) => m.node))
-// }
