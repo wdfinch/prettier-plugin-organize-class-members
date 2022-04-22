@@ -1,5 +1,5 @@
 import { namedTypes } from "ast-types/gen/namedTypes"
-import { PluginOptions } from "../types"
+import { PluginOptions } from "../../types"
 
 export interface Options {
   pluginOptions: PluginOptions

@@ -1,10 +1,15 @@
-import type { Parser, ParserOptions, Plugin } from "prettier"
-import { SKIP_ORGANIZE_COMMENTS } from "./constants"
+import type { Parser, Plugin } from "prettier"
+import { defaultPluginOptions, SKIP_ORGANIZE_COMMENTS } from "./constants"
 import { organize } from "./logic"
+import { ParserOptionsWithCustomOptions, PluginOptions } from "./types"
+import { areOptionsValid } from "./validateOptionsHelpers"
 import babelParsers = require("prettier/parser-babel")
 import typescriptParsers = require("prettier/parser-typescript")
 
-const organizeClasses = (code: string, options: ParserOptions) => {
+const organizeClasses = (
+  code: string,
+  options: ParserOptionsWithCustomOptions
+) => {
   for (const skip of SKIP_ORGANIZE_COMMENTS) {
     if (code.includes(skip)) {
       return code
@@ -12,7 +17,17 @@ const organizeClasses = (code: string, options: ParserOptions) => {
   }
 
   try {
-    return organize(code, options)
+    const o: PluginOptions = {
+      sectionOrder: options.sectionOrder,
+      accessibilityOrder: options.accessibilityOrder,
+      groupOrder: options.groupOrder,
+      groupSortOrder: options.groupSortOrder,
+    }
+
+    // throw if options are not valid
+    areOptionsValid(o)
+
+    return organize(code, o)
   } catch (e) {
     if (!!process.env.DEBUG) {
       console.error(e)
@@ -27,7 +42,7 @@ const withPreprocess = (parser: Parser): Parser => ({
   preprocess: (code, options) =>
     organizeClasses(
       parser.preprocess ? parser.preprocess(code, options) : code,
-      options
+      options as ParserOptionsWithCustomOptions
     ),
 })
 
@@ -36,6 +51,7 @@ export const plugin: Plugin = {
     babel: withPreprocess(babelParsers.parsers.babel),
     typescript: withPreprocess(typescriptParsers.parsers.typescript),
   },
+  options: defaultPluginOptions,
 }
 
 export const parsers: { [parserName: string]: Parser } | undefined =

@@ -1,5 +1,5 @@
 {
-  "name": "prettier-plugin-organize-classes",
+  "name": "prettier-plugin-organize-class-memebers",
   "version": "1.0.0-beta.0",
   "description": "prettier plugin to organize javascript and typescript classes",
   "keywords": [
@@ -9,14 +9,14 @@
     "classes",
     "organize-classes"
   ],
-  "main": "src/index.ts",
+  "main": "build/index.js",
   "scripts": {
     "build": "rimraf build && tsc",
     "build:watch": "rimraf build && tsc --watch",
-    "prettier:write": "npx prettier --write src",
+    "prettier:write": "prettier --write src",
     "prepare": "husky install",
-    "lint": "eslint 'src/**/*.ts",
-    "test": "node ./dist/index.js"
+    "lint": "eslint src/**/*.ts",
+    "test": "jest"
   },
   "repository": {
     "type": "git",
@@ -29,23 +29,30 @@
   },
   "homepage": "https://github.com/wdfinch/prettier-plugin-organize-classes#readme",
   "devDependencies": {
-    "@types/jscodeshift": "^0.11.3",
-    "@types/lodash": "^4.14.178",
-    "@types/prettier": "^2.4.3",
+    "@types/jest": "^27.4.1",
+    "@types/jscodeshift": "^0.11.4",
+    "@types/lodash": "^4.14.182",
+    "@types/prettier": "^2.6.0",
     "@typescript-eslint/eslint-plugin": "^5.20.0",
     "@typescript-eslint/parser": "^5.20.0",
     "eslint": "^8.13.0",
     "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-jest": "^26.1.4",
     "husky": "^7.0.4",
-    "lint-staged": "^12.3.2",
-    "prettier": "^2.5.1",
+    "jest": "^27.5.1",
+    "lint-staged": "^12.4.0",
+    "prettier": "^2.6.2",
     "prettier-plugin-organize-imports": "^2.3.4",
-    "prettier-plugin-packagejson": "^2.2.15",
+    "prettier-plugin-packagejson": "^2.2.17",
     "rimraf": "^3.0.2",
+    "ts-jest": "^27.1.4",
     "typescript": "^4.6.3"
   },
   "lint-staged": {
-    "*.ts": ["prettier --write", "eslint"]
+    "*.ts": [
+      "prettier --write",
+      "eslint"
+    ]
   },
   "dependencies": {
     "jscodeshift": "^0.13.1",

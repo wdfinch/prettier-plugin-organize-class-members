@@ -3,8 +3,8 @@
     "target": "ES2018",
     "module": "CommonJS",
     "inlineSourceMap": true,
-    "lib": ["ES2018", "DOM"],
-    "outDir": "dist",
+    "lib": ["ES2018"],
+    "outDir": "build",
     "moduleResolution": "Node",
     "rootDir": "src",
     "strict": true,
@@ -12,8 +12,8 @@
     "noUncheckedIndexedAccess": true,
     "removeComments": true,
     "esModuleInterop": true,
-    "types": ["node"]
+    "types": ["node", "jest"]
   },
   "include": ["./src/**/*"],
-  "exclude": ["node_modules"]
+  "exclude": ["node_modules", "src/__tests__"]
 }

@@ -1,7 +1,7 @@
 import { namedTypes } from "ast-types/gen/namedTypes"
 import { ClassMethod, ClassProperty, Collection } from "jscodeshift"
 import _ from "lodash"
-import { Accessibility } from "../types"
+import { Accessibility } from "../../types"
 import {
   getMembersSortedByAccessibility,
   getNewMemberAccessibilityGroup,
@@ -43,7 +43,7 @@ const getPropertiesByAccessibility = (
     return null
   }
 
-  if (options.pluginOptions.sortOrder === "alphabetical") {
+  if (options.pluginOptions.groupSortOrder === "alphabetical") {
     nodes = _.sortBy(nodes, (n) => getNodeName(n))
   }
 

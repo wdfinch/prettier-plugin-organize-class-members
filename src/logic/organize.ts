@@ -1,35 +1,18 @@
 import { namedTypes } from "ast-types/gen/namedTypes"
 import { ClassBody } from "jscodeshift"
-import { ParserOptions } from "prettier"
-import {
-  defaultAccessibilityOrder,
-  defaultGroupOrder,
-  defaultOrder,
-  defaultSortOrder,
-} from "./constants"
+import { PluginOptions } from "../types"
 import { getConstructorMethod, getMethods } from "./helpers"
 import { getProperties } from "./helpers/properties"
-import { PluginOptions, SectionsToSort } from "./types"
-import { areOptionsValid } from "./validateOptionsHelpers"
+import { SectionsToSort } from "./types"
 import jscodeshift = require("jscodeshift")
 
-export const organize = (code: string, options: ParserOptions) => {
+export const organize = (code: string, pluginOptions: PluginOptions) => {
   const root = jscodeshift.withParser("tsx")(code)
   const body = root.find(ClassBody)
 
   if (body.length === 0) {
     return root.toSource()
   }
-
-  const pluginOptions: PluginOptions = {
-    order: defaultOrder,
-    sortOrder: defaultSortOrder,
-    accessibilityOrder: defaultAccessibilityOrder,
-    groupOrder: defaultGroupOrder,
-  }
-
-  // throw error if options are invalid
-  areOptionsValid(pluginOptions)
 
   const sectionsToSort: SectionsToSort = {
     constructor: getConstructorMethod(body),
@@ -46,7 +29,7 @@ export const organize = (code: string, options: ParserOptions) => {
   }
 
   const sorted: (namedTypes.ClassBody["body"] | null)[] = []
-  defaultOrder.forEach((item) => {
+  pluginOptions.sectionOrder.forEach((item) => {
     if (item === "constructor") {
       sorted.push(sectionsToSort.constructor)
     } else if (item === "methods") {
@@ -71,5 +54,5 @@ export const organize = (code: string, options: ParserOptions) => {
 
   console.log(root.toSource())
 
-  return code
+  return root.toSource()
 }
