@@ -5,8 +5,10 @@ import {
   defaultAccessibilityOrder,
   defaultGroupOrder,
   defaultOrder,
+  defaultSortOrder,
 } from "./constants"
-import { getConstructorMethod, getMethods } from "./js"
+import { getConstructorMethod, getMethods } from "./helpers"
+import { getProperties } from "./helpers/properties"
 import { PluginOptions, SectionsToSort } from "./types"
 import { hasDuplicates } from "./utils"
 import jscodeshift = require("jscodeshift")
@@ -21,14 +23,23 @@ export const organize = (code: string, options: ParserOptions) => {
 
   const pluginOptions: PluginOptions = {
     order: defaultOrder,
-    sortOrder: "alphabetical",
+    sortOrder: defaultSortOrder,
     accessibilityOrder: defaultAccessibilityOrder,
     groupOrder: defaultGroupOrder,
   }
 
   const sectionsToSort: SectionsToSort = {
     constructor: getConstructorMethod(body),
-    methods: getMethods(body, pluginOptions),
+    methods: getMethods(body, { pluginOptions, getStaticMethods: false }),
+    staticMethods: getMethods(body, { pluginOptions, getStaticMethods: true }),
+    properties: getProperties(body, {
+      pluginOptions: pluginOptions,
+      getStaticMethods: false,
+    }),
+    staticProperties: getProperties(body, {
+      pluginOptions: pluginOptions,
+      getStaticMethods: true,
+    }),
   }
 
   if (hasDuplicates(defaultOrder)) {
@@ -41,6 +52,12 @@ export const organize = (code: string, options: ParserOptions) => {
       sorted.push(sectionsToSort.constructor)
     } else if (item === "methods") {
       sorted.push(sectionsToSort.methods)
+    } else if (item === "staticMethods") {
+      sorted.push(sectionsToSort.staticMethods)
+    } else if (item === "properties") {
+      sorted.push(sectionsToSort.properties)
+    } else if (item === "staticProperties") {
+      sorted.push(sectionsToSort.staticProperties)
     }
   })
 
@@ -52,16 +69,6 @@ export const organize = (code: string, options: ParserOptions) => {
     path.node.body = sortedWithoutNull.flat()
     return path.node
   })
-
-  // organizeMethods(body, options)
-  // organizeStaticMethods(body, options)
-  // organizePrivateMethods(body, options)
-  // organizeStaticProperties(body, options)
-  //
-  // if (options.parser === "typescript") {
-  //   organizeClassProperties(body)
-  //   organizePrivateProtectedClassMethods(body)
-  // }
 
   console.log(root.toSource())
 

@@ -9,9 +9,9 @@ export class Car {
     return this.name
   }
 
-  public1: string
+  static public1: string
   private name: string
-  private year: string
+  private static year: string
   public2: string
   protected protected2: string
   protected protected1: string

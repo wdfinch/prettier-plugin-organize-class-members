@@ -1,4 +1,4 @@
-import { AccessibilityOrder, GroupOrder, Order } from "./types"
+import { AccessibilityOrder, GroupOrder, Order, SortOrder } from "./types"
 
 export const defaultOrder: Order = [
   "staticProperties",
@@ -18,3 +18,5 @@ export const defaultGroupOrder: GroupOrder = [
   "getterThenSetter",
   "everythingElse",
 ]
+
+export const defaultSortOrder: SortOrder = "alphabetical"

@@ -1,7 +1,12 @@
 import { namedTypes } from "ast-types/gen/namedTypes"
 import { ClassMethod, ClassPrivateMethod, Collection } from "jscodeshift"
 import _ from "lodash"
-import { Filter, MemberAccessibilityGroup, PluginOptions } from "../types"
+import { Accessibility } from "../types"
+import {
+  getMembersSortedByAccessibility,
+  getNewMemberAccessibilityGroup,
+} from "./helpers"
+import { ClassBody, Options } from "./types"
 
 export const getConstructorMethod = (
   body: Collection<namedTypes.ClassBody>
@@ -22,11 +27,13 @@ const getNodeName = (node: namedTypes.ClassBody["body"][number]) =>
 
 const findMethods = (
   body: Collection<namedTypes.ClassBody>,
-  filter: Filter
+  accessibility: Accessibility,
+  options: Options
 ): namedTypes.ClassBody["body"] => {
   let methods = body
     .find(ClassMethod, {
       kind: "method",
+      static: options.getStaticMethods,
       key: {
         type: "Identifier",
       },
@@ -36,13 +43,13 @@ const findMethods = (
   methods = methods.filter((method) => {
     const a = method.node.accessibility
     const isConventionalPrivateMethod = getNodeName(method.node)[0] === "_"
-    const isPublic = filter === "public" || a === undefined
+    const isPublic = accessibility === "public" || a === undefined
 
-    if (filter !== "private" && isConventionalPrivateMethod) {
+    if (accessibility !== "private" && isConventionalPrivateMethod) {
       return false
     }
 
-    if (filter === "private" && isConventionalPrivateMethod) {
+    if (accessibility === "private" && isConventionalPrivateMethod) {
       return true
     }
 
@@ -50,14 +57,14 @@ const findMethods = (
       return true
     }
 
-    return a === filter
+    return a === accessibility
   })
 
   const methodNodes = methods.map((n) => n.node)
 
-  if (filter === "private") {
+  if (accessibility === "private") {
     const privateMethods = body
-      .find(ClassPrivateMethod)
+      .find(ClassPrivateMethod, { static: options.getStaticMethods })
       .paths()
       .map((n) => n.node)
 
@@ -66,8 +73,6 @@ const findMethods = (
 
   return methodNodes
 }
-
-type ClassBody = namedTypes.ClassBody["body"] extends (infer U)[] ? U : never
 
 interface GetterAndSetter {
   getter: ClassBody | null
@@ -127,20 +132,20 @@ const getGetterAndSetters = (
 
 const getMethodByAccessibility = (
   body: Collection<namedTypes.ClassBody>,
-  filter: Filter,
-  options: PluginOptions
+  accessibility: Accessibility,
+  options: Options
 ): namedTypes.ClassBody["body"] | null => {
-  let nodes = findMethods(body, filter)
+  let nodes = findMethods(body, accessibility, options)
 
   if (nodes.length === 0) {
     return null
   }
 
-  if (options.sortOrder === "alphabetical") {
+  if (options.pluginOptions.sortOrder === "alphabetical") {
     nodes = _.sortBy(nodes, (n) => getNodeName(n))
   }
 
-  options.groupOrder.forEach((o) => {
+  options.pluginOptions.groupOrder.forEach((o) => {
     if (o === "getterThenSetter") {
       nodes = [...getGetterAndSetters(nodes), ...nodes]
     }
@@ -151,28 +156,13 @@ const getMethodByAccessibility = (
 
 export const getMethods = (
   body: Collection<namedTypes.ClassBody>,
-  options: PluginOptions
+  options: Options
 ): namedTypes.ClassBody["body"] => {
-  const group: MemberAccessibilityGroup = {
-    private: null,
-    protected: null,
-    public: null,
-  }
+  const group = getNewMemberAccessibilityGroup()
 
   group.public = getMethodByAccessibility(body, "public", options)
   group.protected = getMethodByAccessibility(body, "protected", options)
   group.private = getMethodByAccessibility(body, "private", options)
 
-  let sortedByAccessibility: namedTypes.ClassBody["body"] = []
-  options.accessibilityOrder.forEach((a) => {
-    if (a === "public" && group.public) {
-      sortedByAccessibility = [...sortedByAccessibility, ...group.public]
-    } else if (a === "protected" && group.protected) {
-      sortedByAccessibility = [...sortedByAccessibility, ...group.protected]
-    } else if (a === "private" && group.private) {
-      sortedByAccessibility = [...sortedByAccessibility, ...group.private]
-    }
-  })
-
-  return sortedByAccessibility
+  return getMembersSortedByAccessibility(group, options)
 }

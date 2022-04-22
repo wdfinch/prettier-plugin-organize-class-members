@@ -16,6 +16,14 @@ export class Car {
 
   }
 
+  static methodS1() {
+
+  }
+
+  static #methodS12() {
+
+  }
+
   _method2() {
 
   }

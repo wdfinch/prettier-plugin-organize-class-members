@@ -9,29 +9,21 @@ export type Sections =
 
 export type Order = Sections[]
 
-type Accessibility = "public" | "protected" | "private"
+export type Accessibility = "public" | "private" | "protected"
 export type AccessibilityOrder = Accessibility[]
+
 export type Groups = "getterThenSetter" | "everythingElse"
 export type GroupOrder = Groups[]
+export type SortOrder = "alphabetical" | "none"
 
 export interface PluginOptions {
   order: Order
-  sortOrder: "alphabetical" | "none"
   accessibilityOrder: AccessibilityOrder
   groupOrder: GroupOrder
+  sortOrder: SortOrder
 }
-
-export type InternalSortSection = "constructor" | "methods"
 
 export type SectionsToSort = Record<
-  InternalSortSection,
+  Sections,
   namedTypes.ClassBody["body"] | null
 >
-
-export interface MemberAccessibilityGroup {
-  public: namedTypes.ClassBody["body"] | null
-  private: namedTypes.ClassBody["body"] | null
-  protected: namedTypes.ClassBody["body"] | null
-}
-
-export type Filter = "public" | "private" | "protected"
