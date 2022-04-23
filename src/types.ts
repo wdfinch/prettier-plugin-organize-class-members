@@ -12,7 +12,7 @@ export type SectionOrder = Section[]
 export type Accessibility = 'public' | 'private' | 'protected'
 export type AccessibilityOrder = Accessibility[]
 
-export type Groups = 'getterThenSetter' | 'everythingElse'
+export type Groups = 'gettersAndSetters' | 'everythingElse'
 export type GroupOrder = Groups[]
 export type GroupSortOrder = 'alphabetical' | 'none'
 

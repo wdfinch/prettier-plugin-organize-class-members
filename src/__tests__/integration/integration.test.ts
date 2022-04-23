@@ -10,7 +10,7 @@ describe('Integration', () => {
     const d = [__dirname, 'groups']
     expect(
       getFormattedOutput(d, {
-        classGroupOrder: ['getterThenSetter', 'everythingElse'],
+        classGroupOrder: ['gettersAndSetters', 'everythingElse'],
       })
     ).toEqual(getOutput(d))
   })
@@ -19,7 +19,7 @@ describe('Integration', () => {
     const d = [__dirname, 'custom-section-order']
     expect(
       getFormattedOutput(d, {
-        classGroupOrder: ['getterThenSetter', 'everythingElse'],
+        classGroupOrder: ['gettersAndSetters', 'everythingElse'],
         classSectionOrder: [
           'constructor',
           'methods',
@@ -44,7 +44,7 @@ describe('Integration', () => {
     const d = [__dirname, 'alphabetical']
     expect(
       getFormattedOutput(d, {
-        classGroupOrder: ['getterThenSetter', 'everythingElse'],
+        classGroupOrder: ['gettersAndSetters', 'everythingElse'],
         classGroupSortOrder: 'alphabetical',
       })
     ).toEqual(getOutput(d))

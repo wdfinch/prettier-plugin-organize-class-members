@@ -68,7 +68,7 @@ const isGroupOrderValid = (groupOrder: GroupOrder) => {
   }
 
   groupOrder.forEach((g) => {
-    if (g !== 'getterThenSetter' && g !== 'everythingElse') {
+    if (g !== 'gettersAndSetters' && g !== 'everythingElse') {
       throw new Error('groupOrder cannot contain valid values')
     }
   })

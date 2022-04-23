@@ -12,8 +12,8 @@ import {
 } from './types'
 
 export const SKIP_ORGANIZE_COMMENTS = [
-  '// organize-classes-ignore',
-  '// tslint:disable:organized-classes',
+  '// organize-class-members-ignore',
+  '// tslint:disable:organize-class-members',
 ]
 
 const sortAttributesOption: PathArraySupportOption = {

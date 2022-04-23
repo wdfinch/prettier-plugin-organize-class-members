@@ -26,7 +26,6 @@ const organizeClasses = (
       classGroupOrder: options.classGroupOrder,
       classGroupSortOrder: options.classGroupSortOrder,
     }
-    console.log(o)
     // throw if options are not valid
     areOptionsValid(o)
 

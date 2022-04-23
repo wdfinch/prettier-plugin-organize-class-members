@@ -126,7 +126,7 @@ const getMembersByAccessibility = (
 
   const groupedNodes: namedTypes.ClassBody['body'][] = []
   options.pluginOptions.classGroupOrder.forEach((o) => {
-    if (o === 'getterThenSetter') {
+    if (o === 'gettersAndSetters') {
       groupedNodes.push(getGetterAndSetters(nodes))
     }
     if (o === 'everythingElse') {

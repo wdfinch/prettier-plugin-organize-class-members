@@ -25,16 +25,26 @@ describe('Methods', () => {
     const d = [__dirname, 'getters-setters', 'conventional']
     expect(
       getFormattedOutput(d, {
-        classGroupOrder: ['getterThenSetter', 'everythingElse'],
+        classGroupOrder: ['gettersAndSetters', 'everythingElse'],
       })
     ).toEqual(getOutput(d))
   })
+
+  // it('should organize methods with getters and setters alphabetically', () => {
+  //   const d = [__dirname, 'getters-setters', 'alphabetical']
+  //   expect(
+  //       getFormattedOutput(d, {
+  //         classGroupOrder: ['gettersAndSetters', 'everythingElse'],
+  //         classGroupSortOrder: 'alphabetical'
+  //       })
+  //   ).toEqual(getOutput(d))
+  // })
 
   it('should organize methods using groupOrder', () => {
     const d = [__dirname, 'getters-setters', 'getters-setters-last']
     expect(
       getFormattedOutput(d, {
-        classGroupOrder: ['everythingElse', 'getterThenSetter'],
+        classGroupOrder: ['everythingElse', 'gettersAndSetters'],
       })
     ).toEqual(getOutput(d))
   })
@@ -43,7 +53,7 @@ describe('Methods', () => {
     const d = [__dirname, 'getters-setters', 'ts-getter-setter']
     expect(
       getFormattedOutput(d, {
-        classGroupOrder: ['getterThenSetter', 'everythingElse'],
+        classGroupOrder: ['gettersAndSetters', 'everythingElse'],
       })
     ).toEqual(getOutput(d))
   })

@@ -61,7 +61,5 @@ export const organize = (code: string, pluginOptions: PluginOptions) => {
     return path.node
   })
 
-  console.log(root.toSource())
-
   return root.toSource()
 }
