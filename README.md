@@ -18,6 +18,12 @@ A plugin that makes Prettier organize your Javascript and Typescript class membe
 This plugin inherits, extends, and overrides the built-in Prettier parsers for `babel` and `typescript`. Therefore it's
 incompatible with other plugins that do the same. See the troubleshooting section below for more details.
 
+**Stability**
+
+This plugin is new and currently in beta. It has not been extensively tested in large complex projects. Therefore if you
+are using this plugin for the first time, **please run prettier in dry run mode or in a state where you can
+easily rollback**.
+
 ## Installation
 
 ```sh
@@ -201,6 +207,19 @@ module.exports = {
 ```
 ---
 
+## Troubleshooting / FAQ
+
+Q: This plugin isn't working with another Javascript/Typescript prettier plugin like [
+prettier-plugin-organize-imports](https://github.com/simonhaenisch/prettier-plugin-organize-imports). How can I use both
+
+A: Many plugins override the same prettier parsers and are therefore incompatible with each other. A workaround is to simple run them independently by specify the exact plugin to use. This can be with the following command:
+
+```sh
+prettier --write FILES_TO_WRITE --no-plugin-search --plugin=prettier-plugin-organize-class-members
+```
+
+This will run this plugin in isolation and not cause conflicts with other plugins.
+
 ## Rationale/Disclaimer
 
 This plugin acts outside
@@ -210,12 +229,6 @@ only prints code. It does not transform it." and organizing classes is a code tr
 However, moving members around in classes does not alter the execution of the code at all and therefore is purely
 cosmetic. This plugin does and will strictly adhere to the principle of not making any transformations that alter code
 execution.
-
-## Stability
-
-This plugin is new and currently in beta. It has not been extensively tested in large complex projects. Therefore if you
-are using this plugin for the first time, please run prettier in dry run mode or in a clean state (git) where you can
-easily rollback.
 
 ## License
 
