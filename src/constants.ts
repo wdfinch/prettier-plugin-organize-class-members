@@ -76,19 +76,12 @@ export const defaultSortOrderSupportOption: ChoiceSupportOption<GroupSortOrder> 
       'List of string values to determine the sort order of the class sections',
   }
 
-export const defaultPluginOptions: PluginOptions = {
-  sectionOrder: defaultSectionOrder,
-  accessibilityOrder: defaultAccessibilityOrder,
-  groupOrder: defaultGroupOrder,
-  groupSortOrder: defaultGroupSortOrder,
-}
-
 export const defaultPluginOptionsSupportOption: Record<
   keyof PluginOptions,
   SupportOption
 > = {
-  sectionOrder: defaultSectionOrderSupportOption,
-  accessibilityOrder: defaultAccessibilityOrderSupportOption,
-  groupOrder: defaultGroupOrderSupportOption,
-  groupSortOrder: defaultSortOrderSupportOption,
+  classSectionOrder: defaultSectionOrderSupportOption,
+  classAccessibilityOrder: defaultAccessibilityOrderSupportOption,
+  classGroupOrder: defaultGroupOrderSupportOption,
+  classGroupSortOrder: defaultSortOrderSupportOption,
 }

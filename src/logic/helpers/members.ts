@@ -120,12 +120,12 @@ const getMembersByAccessibility = (
     return null
   }
 
-  if (options.pluginOptions.groupSortOrder === 'alphabetical') {
+  if (options.pluginOptions.classGroupSortOrder === 'alphabetical') {
     nodes = _.sortBy(nodes, (n) => getNodeName(n))
   }
 
   const groupedNodes: namedTypes.ClassBody['body'][] = []
-  options.pluginOptions.groupOrder.forEach((o) => {
+  options.pluginOptions.classGroupOrder.forEach((o) => {
     if (o === 'getterThenSetter') {
       groupedNodes.push(getGetterAndSetters(nodes))
     }
@@ -152,7 +152,7 @@ export const getMembers = (
   group.private = getMembersByAccessibility(body, 'private', options)
 
   let sortedByAccessibility: namedTypes.ClassBody['body'] = []
-  options.pluginOptions.accessibilityOrder.forEach((a) => {
+  options.pluginOptions.classAccessibilityOrder.forEach((a) => {
     if (a === 'public' && group.public) {
       sortedByAccessibility = [...sortedByAccessibility, ...group.public]
     } else if (a === 'protected' && group.protected) {

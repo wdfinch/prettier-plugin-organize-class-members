@@ -38,7 +38,7 @@ export const organize = (code: string, pluginOptions: PluginOptions) => {
   }
 
   const sorted: (namedTypes.ClassBody['body'] | null)[] = []
-  pluginOptions.sectionOrder.forEach((item) => {
+  pluginOptions.classSectionOrder.forEach((item) => {
     if (item === 'constructor') {
       sorted.push(sectionsToSort.constructor)
     } else if (item === 'methods') {

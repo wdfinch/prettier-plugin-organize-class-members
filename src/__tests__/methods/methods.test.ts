@@ -25,7 +25,7 @@ describe('Methods', () => {
     const d = [__dirname, 'getters-setters', 'conventional']
     expect(
       getFormattedOutput(d, {
-        groupOrder: ['getterThenSetter', 'everythingElse'],
+        classGroupOrder: ['getterThenSetter', 'everythingElse'],
       })
     ).toEqual(getOutput(d))
   })
@@ -34,7 +34,7 @@ describe('Methods', () => {
     const d = [__dirname, 'getters-setters', 'getters-setters-last']
     expect(
       getFormattedOutput(d, {
-        groupOrder: ['everythingElse', 'getterThenSetter'],
+        classGroupOrder: ['everythingElse', 'getterThenSetter'],
       })
     ).toEqual(getOutput(d))
   })
@@ -43,7 +43,7 @@ describe('Methods', () => {
     const d = [__dirname, 'getters-setters', 'ts-getter-setter']
     expect(
       getFormattedOutput(d, {
-        groupOrder: ['getterThenSetter', 'everythingElse'],
+        classGroupOrder: ['getterThenSetter', 'everythingElse'],
       })
     ).toEqual(getOutput(d))
   })

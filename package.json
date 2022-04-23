@@ -1,5 +1,5 @@
 {
-  "name": "prettier-plugin-organize-class-memebers",
+  "name": "prettier-plugin-organize-class-members",
   "version": "1.0.0-beta.0",
   "description": "prettier plugin to organize javascript and typescript classes",
   "keywords": [

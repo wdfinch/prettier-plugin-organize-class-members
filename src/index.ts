@@ -1,1 +1,1 @@
-export { parsers } from './plugin'
+export { options, parsers } from './plugin'

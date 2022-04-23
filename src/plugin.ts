@@ -1,4 +1,4 @@
-import type { Parser, Plugin } from 'prettier'
+import type { Parser, Plugin, SupportOptions } from 'prettier'
 import {
   defaultPluginOptionsSupportOption,
   SKIP_ORGANIZE_COMMENTS,
@@ -21,12 +21,12 @@ const organizeClasses = (
 
   try {
     const o: PluginOptions = {
-      sectionOrder: options.sectionOrder,
-      accessibilityOrder: options.accessibilityOrder,
-      groupOrder: options.groupOrder,
-      groupSortOrder: options.groupSortOrder,
+      classSectionOrder: options.classSectionOrder,
+      classAccessibilityOrder: options.classAccessibilityOrder,
+      classGroupOrder: options.classGroupOrder,
+      classGroupSortOrder: options.classGroupSortOrder,
     }
-    // console.log(o)
+    console.log(o)
     // throw if options are not valid
     areOptionsValid(o)
 
@@ -56,3 +56,5 @@ export const plugin: Plugin = {
 
 export const parsers: { [parserName: string]: Parser } | undefined =
   plugin.parsers
+
+export const options: SupportOptions | undefined = plugin.options

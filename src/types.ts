@@ -17,10 +17,10 @@ export type GroupOrder = Groups[]
 export type GroupSortOrder = 'alphabetical' | 'none'
 
 export interface PluginOptions {
-  sectionOrder: SectionOrder
-  accessibilityOrder: AccessibilityOrder
-  groupOrder: GroupOrder
-  groupSortOrder: GroupSortOrder
+  classSectionOrder: SectionOrder
+  classAccessibilityOrder: AccessibilityOrder
+  classGroupOrder: GroupOrder
+  classGroupSortOrder: GroupSortOrder
 }
 
 export type ParserOptionsWithCustomOptions = ParserOptions & PluginOptions

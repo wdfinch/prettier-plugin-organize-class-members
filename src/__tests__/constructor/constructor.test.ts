@@ -15,7 +15,7 @@ describe('Constructor', () => {
 
     expect(
       getFormattedOutput(d, {
-        sectionOrder: getSectionOrderOption('constructor'),
+        classSectionOrder: getSectionOrderOption('constructor'),
       })
     ).toEqual(getOutput(d))
   })

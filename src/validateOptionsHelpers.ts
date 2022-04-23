@@ -87,8 +87,8 @@ const isGroupSortOrderValid = (groupSortOrder: GroupSortOrder) => {
 }
 
 export const areOptionsValid = (options: PluginOptions) => {
-  isSectionOrderValid(options.sectionOrder)
-  isAccessibilityOrderValid(options.accessibilityOrder)
-  isGroupOrderValid(options.groupOrder)
-  isGroupSortOrderValid(options.groupSortOrder)
+  isSectionOrderValid(options.classSectionOrder)
+  isAccessibilityOrderValid(options.classAccessibilityOrder)
+  isGroupOrderValid(options.classGroupOrder)
+  isGroupSortOrderValid(options.classGroupSortOrder)
 }
