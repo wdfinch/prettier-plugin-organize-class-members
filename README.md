@@ -20,7 +20,7 @@ incompatible with other plugins that do the same. See the troubleshooting sectio
 
 **Stability**
 
-This plugin is new and currently in beta. It has not been extensively tested in large complex projects. Therefore if you
+This plugin is new and currently in **beta**. It has not been extensively tested in large complex projects. Therefore if you
 are using this plugin for the first time, **please run prettier in dry run mode or in a state where you can
 easily rollback**.
 
@@ -192,7 +192,8 @@ Type: `string`
 **Supported values:**
 
 1. `alphabetical` - sort all members alphabetically within their group with the following conventions:
-   1.  if the `gettersAndSetters` options is used in `classSectionOrder`, then getters and setters will remain together. Ex `getDog()` and `setDog()` will remain next to each other and the letter `D` will be used for sorting
+   1. if the `gettersAndSetters` options is used in `classSectionOrder`, then getters and setters will remain together. Ex. `getDog()` and `setDog()` will remain next to each other and the letter `D` will be used for sorting
+   2. names sorted by their lowercase values. Ex. The Dog() and dog() methods would appear next to each other after sorting. 
 2. `none` - perform no sorting and keep the original order
 
 Default Value: `'none'`
@@ -227,8 +228,8 @@ of [Prettier's scope](https://prettier.io/docs/en/rationale#what-prettier-is-_no
 only prints code. It does not transform it." and organizing classes is a code transformation because it changes the AST.
 
 However, moving members around in classes does not alter the execution of the code at all and therefore is purely
-cosmetic. This plugin does and will strictly adhere to the principle of not making any transformations that alter code
-execution.
+cosmetic. _This plugin does and will strictly adhere to the principle of not making any transformations that alter code
+execution_.
 
 ## License
 
