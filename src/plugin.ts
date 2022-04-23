@@ -1,13 +1,13 @@
-import type { Parser, Plugin } from "prettier"
+import type { Parser, Plugin } from 'prettier'
 import {
   defaultPluginOptionsSupportOption,
   SKIP_ORGANIZE_COMMENTS,
-} from "./constants"
-import { organize } from "./logic"
-import { ParserOptionsWithCustomOptions, PluginOptions } from "./types"
-import { areOptionsValid } from "./validateOptionsHelpers"
-import babelParsers = require("prettier/parser-babel")
-import typescriptParsers = require("prettier/parser-typescript")
+} from './constants'
+import { organize } from './logic'
+import { ParserOptionsWithCustomOptions, PluginOptions } from './types'
+import { areOptionsValid } from './validateOptionsHelpers'
+import babelParsers = require('prettier/parser-babel')
+import typescriptParsers = require('prettier/parser-typescript')
 
 const organizeClasses = (
   code: string,
@@ -32,10 +32,7 @@ const organizeClasses = (
 
     return organize(code, o)
   } catch (e) {
-    if (!!process.env.DEBUG) {
-      console.error(e)
-    }
-
+    console.error(e)
     return code
   }
 }

@@ -1,30 +1,5 @@
-import { namedTypes } from "ast-types/gen/namedTypes"
-import { ClassMethod } from "jscodeshift"
-import { MemberAccessibilityGroup, Options } from "./types"
+import { namedTypes } from 'ast-types/gen/namedTypes'
+import { ClassMethod } from 'jscodeshift'
 
-export const getNewMemberAccessibilityGroup = (): MemberAccessibilityGroup => ({
-  private: null,
-  protected: null,
-  public: null,
-})
-
-export const getMembersSortedByAccessibility = (
-  group: MemberAccessibilityGroup,
-  options: Options
-) => {
-  let sortedByAccessibility: namedTypes.ClassBody["body"] = []
-  options.pluginOptions.accessibilityOrder.forEach((a) => {
-    if (a === "public" && group.public) {
-      sortedByAccessibility = [...sortedByAccessibility, ...group.public]
-    } else if (a === "protected" && group.protected) {
-      sortedByAccessibility = [...sortedByAccessibility, ...group.protected]
-    } else if (a === "private" && group.private) {
-      sortedByAccessibility = [...sortedByAccessibility, ...group.private]
-    }
-  })
-
-  return sortedByAccessibility
-}
-
-export const getNodeName = (node: namedTypes.ClassBody["body"][number]) =>
+export const getNodeName = (node: namedTypes.ClassBody['body'][number]) =>
   ((node as ClassMethod).key as namedTypes.Identifier).name

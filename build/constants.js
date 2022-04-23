@@ -2,54 +2,54 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.defaultPluginOptionsSupportOption = exports.defaultPluginOptions = exports.defaultSortOrderSupportOption = exports.defaultGroupSortOrder = exports.defaultGroupOrderSupportOption = exports.defaultGroupOrder = exports.defaultAccessibilityOrderSupportOption = exports.defaultAccessibilityOrder = exports.defaultSectionOrderSupportOption = exports.defaultSectionOrder = exports.SKIP_ORGANIZE_COMMENTS = void 0;
 exports.SKIP_ORGANIZE_COMMENTS = [
-    "// organize-classes-ignore",
-    "// tslint:disable:organized-classes",
+    '// organize-classes-ignore',
+    '// tslint:disable:organized-classes',
 ];
 const sortAttributesOption = {
-    since: "1.0.0",
-    category: "Global",
-    type: "path",
+    since: '1.0.0',
+    category: 'Global',
+    type: 'path',
     array: true,
 };
 exports.defaultSectionOrder = [
-    "staticProperties",
-    "staticMethods",
-    "properties",
-    "constructor",
-    "methods",
+    'staticProperties',
+    'staticMethods',
+    'properties',
+    'constructor',
+    'methods',
 ];
 exports.defaultSectionOrderSupportOption = {
     ...sortAttributesOption,
     default: [{ value: exports.defaultSectionOrder }],
-    description: "List of string values to determine the sort order of the class sections",
+    description: 'List of string values to determine the sort order of the class sections',
 };
 exports.defaultAccessibilityOrder = [
-    "public",
-    "protected",
-    "private",
+    'public',
+    'protected',
+    'private',
 ];
 exports.defaultAccessibilityOrderSupportOption = {
     ...sortAttributesOption,
     default: [{ value: exports.defaultAccessibilityOrder }],
-    description: "List of string values to determine the sort order of the class sections",
+    description: 'List of string values to determine the sort order of the class sections',
 };
-exports.defaultGroupOrder = ["everythingElse"];
+exports.defaultGroupOrder = ['everythingElse'];
 exports.defaultGroupOrderSupportOption = {
     ...sortAttributesOption,
     default: [{ value: exports.defaultGroupOrder }],
-    description: "List of string values to determine the sort order of the class sections",
+    description: 'List of string values to determine the sort order of the class sections',
 };
-exports.defaultGroupSortOrder = "none";
+exports.defaultGroupSortOrder = 'none';
 exports.defaultSortOrderSupportOption = {
-    category: "Global",
+    category: 'Global',
     choices: [
-        { value: "alphabetical", description: "Sort each group alphabetically." },
-        { value: "none", description: "Perform no group sorting." },
+        { value: 'alphabetical', description: 'Sort each group alphabetically.' },
+        { value: 'none', description: 'Perform no group sorting.' },
     ],
-    since: "1.0.0",
-    type: "choice",
+    since: '1.0.0',
+    type: 'choice',
     default: exports.defaultGroupSortOrder,
-    description: "List of string values to determine the sort order of the class sections",
+    description: 'List of string values to determine the sort order of the class sections',
 };
 exports.defaultPluginOptions = {
     sectionOrder: exports.defaultSectionOrder,
