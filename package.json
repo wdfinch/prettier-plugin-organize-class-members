@@ -51,7 +51,8 @@
   "lint-staged": {
     "*.ts": [
       "prettier --write",
-      "eslint"
+      "eslint",
+      "jest --bail --findRelatedTests"
     ]
   },
   "dependencies": {

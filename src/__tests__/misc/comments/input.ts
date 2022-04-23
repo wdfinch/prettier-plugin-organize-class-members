@@ -1,6 +1,9 @@
 /* eslint-disable */
 class Car {
   // this a short comment for method 1
+  // this a short comment for method 1
+  // this a short comment for method 1
+  // this a short comment for method 1
   method1() {}
   constructor() {}
   /*
