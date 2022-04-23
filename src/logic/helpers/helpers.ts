@@ -1,4 +1,5 @@
 import { namedTypes } from "ast-types/gen/namedTypes"
+import { ClassMethod } from "jscodeshift"
 import { MemberAccessibilityGroup, Options } from "./types"
 
 export const getNewMemberAccessibilityGroup = (): MemberAccessibilityGroup => ({
@@ -24,3 +25,6 @@ export const getMembersSortedByAccessibility = (
 
   return sortedByAccessibility
 }
+
+export const getNodeName = (node: namedTypes.ClassBody["body"][number]) =>
+  ((node as ClassMethod).key as namedTypes.Identifier).name
