@@ -1,4 +1,5 @@
 import { namedTypes } from "ast-types/gen/namedTypes"
+import { ClassMethod } from "jscodeshift"
 import _ from "lodash"
 import { getNodeName } from "../helpers"
 import { ClassBody, Options } from "../types"
@@ -14,13 +15,18 @@ export const getGetterAndSetters = (
   const getterAndSetters = new Map<string, GetterAndSetter>()
 
   nodes.forEach((node) => {
+    node = node as ClassMethod
     const name = getNodeName(node)
 
     if (!name) {
       return nodes
     }
 
-    if (name.startsWith("get") || name.startsWith("set")) {
+    const kind = node.kind
+    const isGet = name.startsWith("get") || kind === "get"
+    const isSet = name.startsWith("set") || kind === "set"
+
+    if (isGet || isSet) {
       const nameWithoutGetSet = name.substring(3)
 
       if (!getterAndSetters.get(nameWithoutGetSet)) {
@@ -30,14 +36,14 @@ export const getGetterAndSetters = (
         })
       }
 
-      if (name.startsWith("get")) {
+      if (isGet) {
         getterAndSetters.set(nameWithoutGetSet, {
           ...getterAndSetters.get(nameWithoutGetSet)!,
           getter: node,
         })
       }
 
-      if (name.startsWith("set")) {
+      if (isSet) {
         getterAndSetters.set(nameWithoutGetSet, {
           ...getterAndSetters.get(nameWithoutGetSet)!,
           setter: node,

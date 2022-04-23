@@ -31,7 +31,6 @@ const findMethods = (
 ): namedTypes.ClassBody["body"] => {
   let methods = body
     .find(ClassMethod, {
-      kind: "method",
       static: options.getStaticMethods,
       key: {
         type: "Identifier",
@@ -40,6 +39,10 @@ const findMethods = (
     .paths()
 
   methods = methods.filter(({ node }) => {
+    if (node.kind === "constructor") {
+      return false
+    }
+
     let a = node.accessibility
     const isConventionalPrivateMethod = getNodeName(node)[0] === "_"
 

@@ -20,6 +20,7 @@ export const getFormattedOutput = (
     parser: "typescript",
     plugins: [plugin],
     ...(options ?? {}),
+    semi: false,
   })
 
 export const getSectionOrderOption = (...order: SectionOrder): SectionOrder =>

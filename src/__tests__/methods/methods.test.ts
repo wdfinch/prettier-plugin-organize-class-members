@@ -38,4 +38,13 @@ describe("Methods", () => {
       })
     ).toEqual(getOutput(d))
   })
+
+  it("should organize typescript getters and setters", () => {
+    const d = [__dirname, "getters-setters", "ts-getter-setter"]
+    expect(
+      getFormattedOutput(d, {
+        groupOrder: ["getterThenSetter", "everythingElse"],
+      })
+    ).toEqual(getOutput(d))
+  })
 })
