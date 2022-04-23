@@ -1,6 +1,11 @@
 /* eslint-disable */
 class Car {
+  private _dog: string = ''
   constructor() {}
+  get dog() {
+    return ''
+  }
+  set dog(d: string) {}
   getMethod2() {}
   setMethod2() {}
   getMethod3() {}

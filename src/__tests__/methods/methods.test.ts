@@ -30,15 +30,15 @@ describe('Methods', () => {
     ).toEqual(getOutput(d))
   })
 
-  // it('should organize methods with getters and setters alphabetically', () => {
-  //   const d = [__dirname, 'getters-setters', 'alphabetical']
-  //   expect(
-  //       getFormattedOutput(d, {
-  //         classGroupOrder: ['gettersAndSetters', 'everythingElse'],
-  //         classGroupSortOrder: 'alphabetical'
-  //       })
-  //   ).toEqual(getOutput(d))
-  // })
+  it('should organize methods with getters and setters alphabetically', () => {
+    const d = [__dirname, 'getters-setters', 'alphabetical']
+    expect(
+      getFormattedOutput(d, {
+        classGroupOrder: ['gettersAndSetters', 'everythingElse'],
+        classGroupSortOrder: 'alphabetical',
+      })
+    ).toEqual(getOutput(d))
+  })
 
   it('should organize methods using groupOrder', () => {
     const d = [__dirname, 'getters-setters', 'getters-setters-last']

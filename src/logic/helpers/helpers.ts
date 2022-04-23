@@ -1,5 +1,20 @@
 import { namedTypes } from 'ast-types/gen/namedTypes'
-import { ClassMethod } from 'jscodeshift'
+import { ClassMethod, ClassPrivateProperty, ClassProperty } from 'jscodeshift'
+import _ from 'lodash'
 
-export const getNodeName = (node: namedTypes.ClassBody['body'][number]) =>
-  ((node as ClassMethod).key as namedTypes.Identifier).name
+export const getNodeName = (node: namedTypes.ClassBody['body'][number]) => {
+  if (node.type === 'ClassPrivateProperty') {
+    return (node as ClassPrivateProperty).key.id.name
+  }
+
+  return ((node as ClassMethod | ClassProperty).key as namedTypes.Identifier)
+    .name
+}
+
+export const sortNodesByName = (nodes: namedTypes.ClassBody['body']) =>
+  _.sortBy(nodes, (n) => {
+    if (!getNodeName(n)) {
+      console.log(n)
+    }
+    return getNodeName(n).toLowerCase()
+  })

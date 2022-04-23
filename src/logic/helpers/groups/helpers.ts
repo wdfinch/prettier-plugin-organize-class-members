@@ -1,7 +1,7 @@
 import { namedTypes } from 'ast-types/gen/namedTypes'
 import { ClassMethod } from 'jscodeshift'
 import _ from 'lodash'
-import { getNodeName } from '../helpers'
+import { getNodeName, sortNodesByName } from '../helpers'
 import { ClassBody, Options } from '../types'
 
 interface GetterAndSetter {
@@ -10,9 +10,10 @@ interface GetterAndSetter {
 }
 
 export const getGetterAndSetters = (
-  nodes: namedTypes.ClassBody['body']
+  nodes: namedTypes.ClassBody['body'],
+  options: Options
 ): namedTypes.ClassBody['body'] => {
-  const getterAndSetters = new Map<string, GetterAndSetter>()
+  let getterAndSetters = new Map<string, GetterAndSetter>()
 
   nodes.forEach((node) => {
     if (node.type !== 'ClassMethod') {
@@ -20,7 +21,7 @@ export const getGetterAndSetters = (
     }
 
     node = node as ClassMethod
-    const name = getNodeName(node)
+    let name = getNodeName(node)
 
     if (!name) {
       return nodes
@@ -31,30 +32,38 @@ export const getGetterAndSetters = (
     const isSet = name.startsWith('set') || kind === 'set'
 
     if (isGet || isSet) {
-      const nameWithoutGetSet = name.substring(3)
+      if (kind !== 'get' && kind !== 'set') {
+        name = name.substring(3)
+      }
 
-      if (!getterAndSetters.get(nameWithoutGetSet)) {
-        getterAndSetters.set(nameWithoutGetSet, {
+      if (!getterAndSetters.get(name)) {
+        getterAndSetters.set(name, {
           setter: null,
           getter: null,
         })
       }
 
       if (isGet) {
-        getterAndSetters.set(nameWithoutGetSet, {
-          ...getterAndSetters.get(nameWithoutGetSet)!,
+        getterAndSetters.set(name, {
+          ...getterAndSetters.get(name)!,
           getter: node,
         })
       }
 
       if (isSet) {
-        getterAndSetters.set(nameWithoutGetSet, {
-          ...getterAndSetters.get(nameWithoutGetSet)!,
+        getterAndSetters.set(name, {
+          ...getterAndSetters.get(name)!,
           setter: node,
         })
       }
     }
   })
+
+  if (options.pluginOptions.classGroupSortOrder === 'alphabetical') {
+    getterAndSetters = new Map(
+      _.sortBy([...getterAndSetters], (s) => s[0].toUpperCase())
+    )
+  }
 
   const output: namedTypes.ClassBody['body'] = []
   getterAndSetters.forEach((gs) => {
@@ -74,10 +83,14 @@ export const getNodesNotInGroup = (
   options: Options
 ): namedTypes.ClassBody['body'] => {
   const g = options.pluginOptions.classGroupOrder
-  const newNodes: namedTypes.ClassBody['body'] = _.cloneDeep(nodes)
+  let newNodes: namedTypes.ClassBody['body'] = _.cloneDeep(nodes)
   if (g.includes('gettersAndSetters')) {
-    const getterAndSetters = getGetterAndSetters(nodes)
+    const getterAndSetters = getGetterAndSetters(nodes, options)
     _.remove(newNodes, (n) => !!getterAndSetters.find((g) => _.isEqual(g, n)))
+  }
+
+  if (options.pluginOptions.classGroupSortOrder === 'alphabetical') {
+    newNodes = sortNodesByName(newNodes)
   }
 
   return newNodes

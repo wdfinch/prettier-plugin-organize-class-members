@@ -120,14 +120,10 @@ const getMembersByAccessibility = (
     return null
   }
 
-  if (options.pluginOptions.classGroupSortOrder === 'alphabetical') {
-    nodes = _.sortBy(nodes, (n) => getNodeName(n))
-  }
-
   const groupedNodes: namedTypes.ClassBody['body'][] = []
   options.pluginOptions.classGroupOrder.forEach((o) => {
     if (o === 'gettersAndSetters') {
-      groupedNodes.push(getGetterAndSetters(nodes))
+      groupedNodes.push(getGetterAndSetters(nodes, options))
     }
     if (o === 'everythingElse') {
       groupedNodes.push(getNodesNotInGroup(nodes, options))
