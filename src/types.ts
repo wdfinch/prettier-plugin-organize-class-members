@@ -1,8 +1,4 @@
-import {
-  ChoiceSupportOption,
-  ParserOptions,
-  PathArraySupportOption,
-} from 'prettier'
+import { ParserOptions } from 'prettier'
 
 export type Section =
   | 'staticProperties'
@@ -25,13 +21,6 @@ export interface PluginOptions {
   accessibilityOrder: AccessibilityOrder
   groupOrder: GroupOrder
   groupSortOrder: GroupSortOrder
-}
-
-export interface PluginOptionsConfig {
-  sectionOrder: PathArraySupportOption
-  accessibilityOrder: PathArraySupportOption
-  groupOrder: PathArraySupportOption
-  groupSortOrder: ChoiceSupportOption<GroupSortOrder>
 }
 
 export type ParserOptionsWithCustomOptions = ParserOptions & PluginOptions
