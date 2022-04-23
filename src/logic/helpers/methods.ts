@@ -125,6 +125,20 @@ const getGetterAndSetters = (
   return output
 }
 
+const getNodesNotInGroup = (
+  nodes: namedTypes.ClassBody["body"],
+  options: Options
+): namedTypes.ClassBody["body"] => {
+  const g = options.pluginOptions.groupOrder
+  const newNodes: namedTypes.ClassBody["body"] = _.cloneDeep(nodes)
+  if (g.includes("getterThenSetter")) {
+    const getterAndSetters = getGetterAndSetters(nodes)
+    _.remove(newNodes, (n) => !!getterAndSetters.find((g) => _.isEqual(g, n)))
+  }
+
+  return newNodes
+}
+
 const getMethodByAccessibility = (
   body: Collection<namedTypes.ClassBody>,
   accessibility: Accessibility,
@@ -140,13 +154,17 @@ const getMethodByAccessibility = (
     nodes = _.sortBy(nodes, (n) => getNodeName(n))
   }
 
+  const groupedNodes: namedTypes.ClassBody["body"][] = []
   options.pluginOptions.groupOrder.forEach((o) => {
     if (o === "getterThenSetter") {
-      nodes = [...getGetterAndSetters(nodes), ...nodes]
+      groupedNodes.push(getGetterAndSetters(nodes))
+    }
+    if (o === "everythingElse") {
+      groupedNodes.push(getNodesNotInGroup(nodes, options))
     }
   })
 
-  return _.uniqBy(nodes, (g) => getNodeName(g))
+  return _.flatten(groupedNodes)
 }
 
 export const getMethods = (
