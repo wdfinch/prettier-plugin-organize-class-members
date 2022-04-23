@@ -1,59 +1,66 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.defaultPluginOptions = exports.defaultSortOrderSupportOption = exports.defaultGroupOrderSupportOption = exports.defaultGroupOrder = exports.defaultAccessibilityOrderSupportOption = exports.defaultAccessibilityOrder = exports.defaultSectionOrderSupportOption = exports.defaultSectionOrder = exports.SKIP_ORGANIZE_COMMENTS = void 0;
+exports.defaultPluginOptionsSupportOption = exports.defaultPluginOptions = exports.defaultSortOrderSupportOption = exports.defaultGroupSortOrder = exports.defaultGroupOrderSupportOption = exports.defaultGroupOrder = exports.defaultAccessibilityOrderSupportOption = exports.defaultAccessibilityOrder = exports.defaultSectionOrderSupportOption = exports.defaultSectionOrder = exports.SKIP_ORGANIZE_COMMENTS = void 0;
 exports.SKIP_ORGANIZE_COMMENTS = [
-    '// organize-classes-ignore',
-    '// tslint:disable:organized-classes'
+    "// organize-classes-ignore",
+    "// tslint:disable:organized-classes",
 ];
 const sortAttributesOption = {
-    since: '1.0.0',
-    category: 'Global',
-    type: 'path',
-    array: true
+    since: "1.0.0",
+    category: "Global",
+    type: "path",
+    array: true,
 };
 exports.defaultSectionOrder = [
-    'staticProperties',
-    'staticMethods',
-    'properties',
-    'constructor',
-    'methods'
+    "staticProperties",
+    "staticMethods",
+    "properties",
+    "constructor",
+    "methods",
 ];
 exports.defaultSectionOrderSupportOption = {
     ...sortAttributesOption,
     default: [{ value: exports.defaultSectionOrder }],
-    description: 'List of string values to determine the sort order of the class sections'
+    description: "List of string values to determine the sort order of the class sections",
 };
 exports.defaultAccessibilityOrder = [
-    'public',
-    'protected',
-    'private'
+    "public",
+    "protected",
+    "private",
 ];
 exports.defaultAccessibilityOrderSupportOption = {
     ...sortAttributesOption,
     default: [{ value: exports.defaultAccessibilityOrder }],
-    description: 'List of string values to determine the sort order of the class sections'
+    description: "List of string values to determine the sort order of the class sections",
 };
-exports.defaultGroupOrder = ['everythingElse'];
+exports.defaultGroupOrder = ["everythingElse"];
 exports.defaultGroupOrderSupportOption = {
     ...sortAttributesOption,
     default: [{ value: exports.defaultGroupOrder }],
-    description: 'List of string values to determine the sort order of the class sections'
+    description: "List of string values to determine the sort order of the class sections",
 };
+exports.defaultGroupSortOrder = "none";
 exports.defaultSortOrderSupportOption = {
-    category: 'Global',
+    category: "Global",
     choices: [
-        { value: 'alphabetical', description: 'Sort each group alphabetically.' },
-        { value: 'none', description: 'Perform no group sorting.' }
+        { value: "alphabetical", description: "Sort each group alphabetically." },
+        { value: "none", description: "Perform no group sorting." },
     ],
-    since: '1.0.0',
-    type: 'choice',
-    default: 'none',
-    description: 'List of string values to determine the sort order of the class sections'
+    since: "1.0.0",
+    type: "choice",
+    default: exports.defaultGroupSortOrder,
+    description: "List of string values to determine the sort order of the class sections",
 };
 exports.defaultPluginOptions = {
+    sectionOrder: exports.defaultSectionOrder,
+    accessibilityOrder: exports.defaultAccessibilityOrder,
+    groupOrder: exports.defaultGroupOrder,
+    groupSortOrder: exports.defaultGroupSortOrder,
+};
+exports.defaultPluginOptionsSupportOption = {
     sectionOrder: exports.defaultSectionOrderSupportOption,
     accessibilityOrder: exports.defaultAccessibilityOrderSupportOption,
     groupOrder: exports.defaultGroupOrderSupportOption,
-    groupSortOrder: exports.defaultSortOrderSupportOption
+    groupSortOrder: exports.defaultSortOrderSupportOption,
 };
-//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiY29uc3RhbnRzLmpzIiwic291cmNlUm9vdCI6IiIsInNvdXJjZXMiOlsiLi4vc3JjL2NvbnN0YW50cy50cyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiOzs7QUFTYSxRQUFBLHNCQUFzQixHQUFHO0lBQ2xDLDRCQUE0QjtJQUM1QixxQ0FBcUM7Q0FDeEMsQ0FBQTtBQUdELE1BQU0sb0JBQW9CLEdBQTJCO0lBQ2pELEtBQUssRUFBRSxPQUFPO0lBQ2QsUUFBUSxFQUFFLFFBQVE7SUFDbEIsSUFBSSxFQUFFLE1BQU07SUFDWixLQUFLLEVBQUUsSUFBSTtDQUNkLENBQUE7QUFFWSxRQUFBLG1CQUFtQixHQUFpQjtJQUM3QyxrQkFBa0I7SUFDbEIsZUFBZTtJQUNmLFlBQVk7SUFDWixhQUFhO0lBQ2IsU0FBUztDQUNaLENBQUE7QUFFWSxRQUFBLGdDQUFnQyxHQUEyQjtJQUNwRSxHQUFHLG9CQUFvQjtJQUN2QixPQUFPLEVBQUUsQ0FBQyxFQUFDLEtBQUssRUFBRSwyQkFBbUIsRUFBQyxDQUFDO0lBQ3ZDLFdBQVcsRUFBRSx5RUFBeUU7Q0FDekYsQ0FBQTtBQUVZLFFBQUEseUJBQXlCLEdBQXVCO0lBQ3pELFFBQVE7SUFDUixXQUFXO0lBQ1gsU0FBUztDQUNaLENBQUE7QUFFWSxRQUFBLHNDQUFzQyxHQUEyQjtJQUMxRSxHQUFHLG9CQUFvQjtJQUN2QixPQUFPLEVBQUUsQ0FBQyxFQUFDLEtBQUssRUFBRSxpQ0FBeUIsRUFBQyxDQUFDO0lBQzdDLFdBQVcsRUFBRSx5RUFBeUU7Q0FDekYsQ0FBQTtBQUVZLFFBQUEsaUJBQWlCLEdBQWUsQ0FBQyxnQkFBZ0IsQ0FBQyxDQUFBO0FBRWxELFFBQUEsOEJBQThCLEdBQTJCO0lBQ2xFLEdBQUcsb0JBQW9CO0lBQ3ZCLE9BQU8sRUFBRSxDQUFDLEVBQUMsS0FBSyxFQUFFLHlCQUFpQixFQUFDLENBQUM7SUFDckMsV0FBVyxFQUFFLHlFQUF5RTtDQUN6RixDQUFBO0FBRVksUUFBQSw2QkFBNkIsR0FBd0M7SUFDOUUsUUFBUSxFQUFFLFFBQVE7SUFDbEIsT0FBTyxFQUFFO1FBQ0wsRUFBQyxLQUFLLEVBQUUsY0FBYyxFQUFFLFdBQVcsRUFBRSxpQ0FBaUMsRUFBQztRQUN2RSxFQUFDLEtBQUssRUFBRSxNQUFNLEVBQUUsV0FBVyxFQUFFLDJCQUEyQixFQUFDO0tBQzVEO0lBQ0QsS0FBSyxFQUFFLE9BQU87SUFDZCxJQUFJLEVBQUUsUUFBUTtJQUNkLE9BQU8sRUFBRSxNQUFNO0lBQ2YsV0FBVyxFQUFFLHlFQUF5RTtDQUN6RixDQUFBO0FBRVksUUFBQSxvQkFBb0IsR0FBK0M7SUFDNUUsWUFBWSxFQUFFLHdDQUFnQztJQUM5QyxrQkFBa0IsRUFBRSw4Q0FBc0M7SUFDMUQsVUFBVSxFQUFFLHNDQUE4QjtJQUMxQyxjQUFjLEVBQUUscUNBQTZCO0NBQ2hELENBQUEifQ==
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiY29uc3RhbnRzLmpzIiwic291cmNlUm9vdCI6IiIsInNvdXJjZXMiOlsiLi4vc3JjL2NvbnN0YW50cy50cyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiOzs7QUFhYSxRQUFBLHNCQUFzQixHQUFHO0lBQ3BDLDRCQUE0QjtJQUM1QixxQ0FBcUM7Q0FDdEMsQ0FBQTtBQUVELE1BQU0sb0JBQW9CLEdBQTJCO0lBQ25ELEtBQUssRUFBRSxPQUFPO0lBQ2QsUUFBUSxFQUFFLFFBQVE7SUFDbEIsSUFBSSxFQUFFLE1BQU07SUFDWixLQUFLLEVBQUUsSUFBSTtDQUNaLENBQUE7QUFFWSxRQUFBLG1CQUFtQixHQUFpQjtJQUMvQyxrQkFBa0I7SUFDbEIsZUFBZTtJQUNmLFlBQVk7SUFDWixhQUFhO0lBQ2IsU0FBUztDQUNWLENBQUE7QUFFWSxRQUFBLGdDQUFnQyxHQUEyQjtJQUN0RSxHQUFHLG9CQUFvQjtJQUN2QixPQUFPLEVBQUUsQ0FBQyxFQUFFLEtBQUssRUFBRSwyQkFBbUIsRUFBRSxDQUFDO0lBQ3pDLFdBQVcsRUFDVCx5RUFBeUU7Q0FDNUUsQ0FBQTtBQUVZLFFBQUEseUJBQXlCLEdBQXVCO0lBQzNELFFBQVE7SUFDUixXQUFXO0lBQ1gsU0FBUztDQUNWLENBQUE7QUFFWSxRQUFBLHNDQUFzQyxHQUEyQjtJQUM1RSxHQUFHLG9CQUFvQjtJQUN2QixPQUFPLEVBQUUsQ0FBQyxFQUFFLEtBQUssRUFBRSxpQ0FBeUIsRUFBRSxDQUFDO0lBQy9DLFdBQVcsRUFDVCx5RUFBeUU7Q0FDNUUsQ0FBQTtBQUVZLFFBQUEsaUJBQWlCLEdBQWUsQ0FBQyxnQkFBZ0IsQ0FBQyxDQUFBO0FBRWxELFFBQUEsOEJBQThCLEdBQTJCO0lBQ3BFLEdBQUcsb0JBQW9CO0lBQ3ZCLE9BQU8sRUFBRSxDQUFDLEVBQUUsS0FBSyxFQUFFLHlCQUFpQixFQUFFLENBQUM7SUFDdkMsV0FBVyxFQUNULHlFQUF5RTtDQUM1RSxDQUFBO0FBRVksUUFBQSxxQkFBcUIsR0FBbUIsTUFBTSxDQUFBO0FBRTlDLFFBQUEsNkJBQTZCLEdBQ3hDO0lBQ0UsUUFBUSxFQUFFLFFBQVE7SUFDbEIsT0FBTyxFQUFFO1FBQ1AsRUFBRSxLQUFLLEVBQUUsY0FBYyxFQUFFLFdBQVcsRUFBRSxpQ0FBaUMsRUFBRTtRQUN6RSxFQUFFLEtBQUssRUFBRSxNQUFNLEVBQUUsV0FBVyxFQUFFLDJCQUEyQixFQUFFO0tBQzVEO0lBQ0QsS0FBSyxFQUFFLE9BQU87SUFDZCxJQUFJLEVBQUUsUUFBUTtJQUNkLE9BQU8sRUFBRSw2QkFBcUI7SUFDOUIsV0FBVyxFQUNULHlFQUF5RTtDQUM1RSxDQUFBO0FBRVUsUUFBQSxvQkFBb0IsR0FBa0I7SUFDakQsWUFBWSxFQUFFLDJCQUFtQjtJQUNqQyxrQkFBa0IsRUFBRSxpQ0FBeUI7SUFDN0MsVUFBVSxFQUFFLHlCQUFpQjtJQUM3QixjQUFjLEVBQUUsNkJBQXFCO0NBQ3RDLENBQUE7QUFFWSxRQUFBLGlDQUFpQyxHQUcxQztJQUNGLFlBQVksRUFBRSx3Q0FBZ0M7SUFDOUMsa0JBQWtCLEVBQUUsOENBQXNDO0lBQzFELFVBQVUsRUFBRSxzQ0FBOEI7SUFDMUMsY0FBYyxFQUFFLHFDQUE2QjtDQUM5QyxDQUFBIn0=

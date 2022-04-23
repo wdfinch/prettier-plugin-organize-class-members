@@ -1,5 +1,8 @@
 import type { Parser, Plugin } from "prettier"
-import { defaultPluginOptions, SKIP_ORGANIZE_COMMENTS } from "./constants"
+import {
+  defaultPluginOptionsSupportOption,
+  SKIP_ORGANIZE_COMMENTS,
+} from "./constants"
 import { organize } from "./logic"
 import { ParserOptionsWithCustomOptions, PluginOptions } from "./types"
 import { areOptionsValid } from "./validateOptionsHelpers"
@@ -23,7 +26,7 @@ const organizeClasses = (
       groupOrder: options.groupOrder,
       groupSortOrder: options.groupSortOrder,
     }
-
+    // console.log(o)
     // throw if options are not valid
     areOptionsValid(o)
 
@@ -51,7 +54,7 @@ export const plugin: Plugin = {
     babel: withPreprocess(babelParsers.parsers.babel),
     typescript: withPreprocess(typescriptParsers.parsers.typescript),
   },
-  options: defaultPluginOptions,
+  options: defaultPluginOptionsSupportOption,
 }
 
 export const parsers: { [parserName: string]: Parser } | undefined =
