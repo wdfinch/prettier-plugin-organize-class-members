@@ -41,21 +41,18 @@ const findMethods = (
     .paths()
 
   methods = methods.filter(({ node }) => {
-    const a = node.accessibility
+    let a = node.accessibility
     const isConventionalPrivateMethod = getNodeName(node)[0] === "_"
 
-    if (
-      accessibility === "private" &&
-      (isConventionalPrivateMethod || a === "private")
-    ) {
-      return true
-    } else if (accessibility === "protected" && a === "protected") {
-      return true
-    } else if (accessibility === "public" && (a === "public" || !a)) {
-      return true
+    if (isConventionalPrivateMethod) {
+      a = "private"
     }
 
-    return false
+    if (!a) {
+      a = "public"
+    }
+
+    return accessibility === a
   })
 
   const methodNodes = methods.map((n) => n.node)
