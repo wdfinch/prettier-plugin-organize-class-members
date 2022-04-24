@@ -10,9 +10,9 @@ export interface Options {
 }
 
 export interface MemberAccessibilityGroup {
-  public: namedTypes.ClassBody['body'] | null
-  private: namedTypes.ClassBody['body'] | null
-  protected: namedTypes.ClassBody['body'] | null
+  public: namedTypes.ClassBody['body']
+  private: namedTypes.ClassBody['body']
+  protected: namedTypes.ClassBody['body']
 }
 
 export type ClassBody = namedTypes.ClassBody['body'] extends (infer U)[]

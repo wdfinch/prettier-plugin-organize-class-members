@@ -38,7 +38,7 @@ const doesNodeMatchAccessibility = (
 
 export const getConstructorMethod = (
   body: Collection<namedTypes.ClassBody>
-): namedTypes.ClassBody['body'] | null => {
+): namedTypes.ClassBody['body'] => {
   const methods = body
     .find(ClassMethod, {
       key: {
@@ -50,7 +50,7 @@ export const getConstructorMethod = (
   const methodNodes = methods.map((n) => n.node)
 
   if (methodNodes.length === 0) {
-    return null
+    return []
   }
 
   return methodNodes.filter((m) => m.kind === 'constructor')
@@ -114,7 +114,7 @@ const getMembersByAccessibility = (
   body: Collection<namedTypes.ClassBody>,
   accessibility: Accessibility,
   options: Options
-): namedTypes.ClassBody['body'] | null => {
+): namedTypes.ClassBody['body'] => {
   let nodes: namedTypes.ClassBody['body']
   if (options.memberType === 'method') {
     nodes = findMethods(body, accessibility, options)
@@ -123,7 +123,7 @@ const getMembersByAccessibility = (
   }
 
   if (nodes.length === 0) {
-    return null
+    return []
   }
 
   const groupedNodes: namedTypes.ClassBody['body'][] = []
@@ -144,9 +144,9 @@ export const getMembers = (
   options: Options
 ): namedTypes.ClassBody['body'] => {
   const group: MemberAccessibilityGroup = {
-    private: null,
-    protected: null,
-    public: null,
+    private: [],
+    protected: [],
+    public: [],
   }
 
   group.public = getMembersByAccessibility(body, 'public', options)
@@ -155,11 +155,11 @@ export const getMembers = (
 
   let sortedByAccessibility: namedTypes.ClassBody['body'] = []
   options.pluginOptions.classAccessibilityOrder.forEach((a) => {
-    if (a === 'public' && group.public) {
+    if (a === 'public') {
       sortedByAccessibility = [...sortedByAccessibility, ...group.public]
-    } else if (a === 'protected' && group.protected) {
+    } else if (a === 'protected') {
       sortedByAccessibility = [...sortedByAccessibility, ...group.protected]
-    } else if (a === 'private' && group.private) {
+    } else if (a === 'private') {
       sortedByAccessibility = [...sortedByAccessibility, ...group.private]
     }
   })

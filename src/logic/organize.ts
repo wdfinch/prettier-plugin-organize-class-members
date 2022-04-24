@@ -40,25 +40,23 @@ export const organize = (code: string, pluginOptions: PluginOptions) => {
       }),
     }
 
-    const sorted: (namedTypes.ClassBody['body'] | null)[] = []
+    const sorted: namedTypes.ClassBody['body'][] = []
     pluginOptions.classSectionOrder.forEach((item) => {
       if (item === 'constructor') {
-        sorted.push(sectionsToSort.constructor)
+        sorted.push(sectionsToSort.constructor!)
       } else if (item === 'methods') {
-        sorted.push(sectionsToSort.methods)
+        sorted.push(sectionsToSort.methods!)
       } else if (item === 'staticMethods') {
-        sorted.push(sectionsToSort.staticMethods)
+        sorted.push(sectionsToSort.staticMethods!)
       } else if (item === 'properties') {
-        sorted.push(sectionsToSort.properties)
+        sorted.push(sectionsToSort.properties!)
       } else if (item === 'staticProperties') {
-        sorted.push(sectionsToSort.staticProperties)
+        sorted.push(sectionsToSort.staticProperties!)
       }
     })
 
-    const filtered = sorted.filter((s) => !!s) as namedTypes.ClassBody['body'][]
-
     body.replaceWith((path) => {
-      path.node.body = filtered.flat()
+      path.node.body = sorted.flat()
       return path.node
     })
   })
