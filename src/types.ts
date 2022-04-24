@@ -8,7 +8,6 @@ export type Section =
   | 'methods'
 
 export type SectionOrder = Section[]
-
 export type Accessibility = 'public' | 'private' | 'protected'
 export type AccessibilityOrder = Accessibility[]
 

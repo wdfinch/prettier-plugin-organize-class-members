@@ -20,14 +20,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/wdfinch/prettier-plugin-organize-classes.git"
+    "url": "git+https://github.com/wdfinch/prettier-plugin-organize-members.git"
   },
   "author": "Will Finch (https://github.com/wdfinch)",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/wdfinch/prettier-plugin-organize-classes/issues"
+    "url": "https://github.com/wdfinch/prettier-plugin-organize-members/issues"
   },
-  "homepage": "https://github.com/wdfinch/prettier-plugin-organize-classes#readme",
+  "homepage": "https://github.com/wdfinch/prettier-plugin-organize-members#readme",
   "devDependencies": {
     "@types/jest": "^27.4.1",
     "@types/jscodeshift": "^0.11.4",
