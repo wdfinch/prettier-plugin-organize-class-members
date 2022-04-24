@@ -16,7 +16,8 @@
     "prettier:write": "prettier --write src",
     "prepare": "husky install",
     "lint": "eslint src/**/*.ts",
-    "test": "jest --bail"
+    "test": "jest --bail",
+    "prepublish": "npm run-script lint && npm run-script test && npm run-script build"
   },
   "repository": {
     "type": "git",

@@ -44,3 +44,4 @@ example/build/
 /cypress/parallel-weights.json
 /cypress/screenshots
 /cypress/fixtures
+.vscode

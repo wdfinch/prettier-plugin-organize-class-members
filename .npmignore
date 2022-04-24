@@ -1,0 +1,11 @@
+.idea
+.husky
+.vscode
+node_modules
+src
+.eslintrc
+.gitignore
+.prettierrc.json
+jest.config.js
+package-lock.json
+tsconfig.json
