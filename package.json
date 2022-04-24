@@ -1,6 +1,6 @@
 {
   "name": "prettier-plugin-organize-class-members",
-  "version": "1.0.0-beta.4",
+  "version": "1.0.0-beta.5",
   "description": "prettier plugin to organize javascript and typescript classes",
   "keywords": [
     "prettier",
@@ -10,7 +10,7 @@
     "organize-classes"
   ],
   "main": "build/index.js",
-  "types": "build/in",
+  "types": "build/index.d.ts",
   "scripts": {
     "build": "rimraf build && tsc",
     "build:watch": "rimraf build && tsc --watch",
