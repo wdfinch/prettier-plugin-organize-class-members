@@ -12,9 +12,4 @@ export const getNodeName = (node: namedTypes.ClassBody['body'][number]) => {
 }
 
 export const sortNodesByName = (nodes: namedTypes.ClassBody['body']) =>
-  _.sortBy(nodes, (n) => {
-    if (!getNodeName(n)) {
-      console.log(n)
-    }
-    return getNodeName(n).toLowerCase()
-  })
+  _.sortBy(nodes, (n) => getNodeName(n).toLowerCase())
