@@ -39,15 +39,21 @@ const doesNodeMatchAccessibility = (
 export const getConstructorMethod = (
   body: Collection<namedTypes.ClassBody>
 ): namedTypes.ClassBody['body'] | null => {
-  const constructorMethod = body.find(ClassMethod, {
-    kind: 'constructor',
-  })
+  const methods = body
+    .find(ClassMethod, {
+      key: {
+        type: 'Identifier',
+      },
+    })
+    .paths()
 
-  if (constructorMethod.length === 0) {
+  const methodNodes = methods.map((n) => n.node)
+
+  if (methodNodes.length === 0) {
     return null
   }
 
-  return constructorMethod.paths().map((n) => n.node)
+  return methodNodes.filter((m) => m.kind === 'constructor')
 }
 
 const findMethods = (

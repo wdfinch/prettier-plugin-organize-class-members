@@ -4,8 +4,9 @@ class Base {
 }
 
 class Sub extends Base {
+  constructor() {
+    super()
+  }
+
   override method1() {}
-  // constructor() {
-  //   super()
-  // }
 }

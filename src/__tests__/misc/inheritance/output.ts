@@ -4,10 +4,9 @@ class Base {
 }
 
 class Sub extends Base {
-  override method1() {}
   constructor() {
     super()
   }
-  method2() {}
-  static staticMethod1() {}
+
+  override method1() {}
 }
