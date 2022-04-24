@@ -1,12 +1,10 @@
 /* eslint-disable */
 class Base {
   method1() {}
+  method2() {}
 }
 
 class Sub extends Base {
-  constructor() {
-    super()
-  }
-
+  override method2() {}
   override method1() {}
 }

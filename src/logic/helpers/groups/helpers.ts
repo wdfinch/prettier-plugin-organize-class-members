@@ -83,15 +83,14 @@ export const getNodesNotInGroup = (
   options: Options
 ): namedTypes.ClassBody['body'] => {
   const g = options.pluginOptions.classGroupOrder
-  let newNodes: namedTypes.ClassBody['body'] = _.cloneDeep(nodes)
   if (g.includes('gettersAndSetters')) {
     const getterAndSetters = getGetterAndSetters(nodes, options)
-    _.remove(newNodes, (n) => !!getterAndSetters.find((g) => _.isEqual(g, n)))
+    nodes = nodes.filter((n) => !getterAndSetters.find((g) => _.isEqual(g, n)))
   }
 
   if (options.pluginOptions.classGroupSortOrder === 'alphabetical') {
-    newNodes = sortNodesByName(newNodes)
+    nodes = sortNodesByName(nodes)
   }
 
-  return newNodes
+  return nodes
 }

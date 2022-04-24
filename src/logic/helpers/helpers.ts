@@ -11,5 +11,8 @@ export const getNodeName = (node: namedTypes.ClassBody['body'][number]) => {
     .name
 }
 
-export const sortNodesByName = (nodes: namedTypes.ClassBody['body']) =>
-  _.sortBy(nodes, (n) => getNodeName(n).toLowerCase())
+export const sortNodesByName = (nodes: namedTypes.ClassBody['body']) => {
+  return _.sortBy(nodes, (n) => {
+    return getNodeName(n).toLowerCase()
+  })
+}
