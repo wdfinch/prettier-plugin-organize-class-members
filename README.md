@@ -31,7 +31,7 @@ npm install --save-dev prettier-plugin-organize-class-members
 ```
 
 ```sh
-yarn add --dev prettier-plugin-organize-imports
+yarn add --dev prettier-plugin-organize-class-members
 ```
 
 _`prettier` is a peer dependencies, so make sure you have those installed in your project._
