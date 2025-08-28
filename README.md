@@ -236,6 +236,12 @@ execution_.
 2. I use [jscodeshift](https://github.com/facebook/jscodeshift) to transform the AST.
 3. I followed [eslint-plugin-sort-class-members](https://github.com/bryanrsmith/eslint-plugin-sort-class-members) as a guide for supported options and design. I wrote this plugin because I prefer to use prettier to resolve formatting issues and eslint for issues that require manual fixes.
 
+## Changelog
+
+### 1.0.0-beta.6
+
+Fix: Preserve and correctly organize TypeScript abstract methods and properties. Previously, abstract members (TSDeclareMethod / TSAbstractMethodDefinition / abstract ClassProperty) were removed during formatting which could break compilation.
+
 ## License
 
 [MIT](/license).
