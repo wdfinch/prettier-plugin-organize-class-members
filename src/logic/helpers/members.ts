@@ -61,6 +61,7 @@ const findMethods = (
   accessibility: Accessibility,
   options: Options
 ): namedTypes.ClassBody['body'] => {
+  // Standard (non-abstract) class methods
   let methods = body
     .find(ClassMethod, {
       static: options.getStaticMethods,
@@ -70,15 +71,36 @@ const findMethods = (
     })
     .paths()
 
+  // Add TS abstract method definitions (Babel AST: TSAbstractMethodDefinition)
+  // They are not returned by jscodeshift ClassMethod finder, so we manually pull them from the raw body.
+  const rawBody: namedTypes.ClassBody['body'] = body
+    .paths()
+    .flatMap((p) => (p.value as namedTypes.ClassBody).body)
+  const abstractMethods = rawBody.filter((n: any) => {
+    return (
+      n &&
+      (n.type === 'TSAbstractMethodDefinition' ||
+        n.type === 'TSDeclareMethod') &&
+      n.static === options.getStaticMethods &&
+      n.key?.type === 'Identifier'
+    )
+  }) as any[]
+
   methods = methods.filter(({ node }) => {
-    if (node.kind === 'constructor') {
+    if ((node as any).kind === 'constructor') {
       return false
     }
-
-    return doesNodeMatchAccessibility(node, accessibility)
+    return doesNodeMatchAccessibility(node as any, accessibility)
   })
 
   const methodNodes = methods.map((n) => n.node)
+
+  // Filter abstract methods by accessibility
+  const abstractMethodNodes = abstractMethods.filter((n) =>
+    doesNodeMatchAccessibility(n as any, accessibility)
+  )
+
+  let collected = [...methodNodes, ...abstractMethodNodes]
 
   if (accessibility === 'private') {
     const privateMethods = body
@@ -86,10 +108,10 @@ const findMethods = (
       .paths()
       .map((n) => n.node)
 
-    return [...methodNodes, ...privateMethods]
+    collected = [...collected, ...privateMethods]
   }
 
-  return methodNodes
+  return collected
 }
 
 const findProperties = (
@@ -103,11 +125,28 @@ const findProperties = (
     })
     .paths()
 
+  const rawBody: namedTypes.ClassBody['body'] = body
+    .paths()
+    .flatMap((p) => (p.value as namedTypes.ClassBody).body)
+  const abstractProperties = rawBody.filter((n: any) => {
+    return (
+      n &&
+      n.type === 'TSAbstractPropertyDefinition' &&
+      n.static === options.getStaticMethods
+    )
+  }) as any[]
+
   properties = properties.filter(({ node }) => {
     return doesNodeMatchAccessibility(node, accessibility)
   })
 
-  return properties.map((n) => n.node)
+  const propertyNodes = properties.map((n) => n.node)
+
+  const abstractPropertyNodes = abstractProperties.filter((n) =>
+    doesNodeMatchAccessibility(n as any, accessibility)
+  )
+
+  return [...propertyNodes, ...abstractPropertyNodes]
 }
 
 const getMembersByAccessibility = (

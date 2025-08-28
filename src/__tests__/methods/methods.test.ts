@@ -62,4 +62,9 @@ describe('Methods', () => {
     const d = [__dirname, 'static']
     expect(getFormattedOutput(d)).toEqual(getOutput(d))
   })
+
+  it('should preserve and organize abstract methods and properties', () => {
+    const d = [__dirname, 'abstract']
+    expect(getFormattedOutput(d)).toEqual(getOutput(d))
+  })
 })
